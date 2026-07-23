@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrowdPulse – AI-Powered Smart Queueless Prediction Platform</title>
+  <meta name="description" content="CrowdPulse uses AI to predict crowd levels, queue times, and the best time to visit banks, hospitals, malls & more. Real-time community reports.">
+  <meta name="keywords" content="crowd prediction, queue time, live crowd levels, AI queue prediction, bank queue, hospital wait time">
+  <meta name="author" content="CrowdPulse">
+  <meta property="og:title" content="CrowdPulse – Never Wait in Line Again">
+  <meta property="og:description" content="AI-powered crowd & queue prediction for banks, hospitals, supermarkets and more.">
+  <!-- Mobile & PWA App Capabilities -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CrowdPulse">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233b82f6'/><text y='.8em' x='15' font-size='70'>⚡</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<header class="navbar" id="navbar">
+  <div class="nav-container">
+    <!-- Brand -->
+    <div class="brand" onclick="navigateTo('home')" role="button" aria-label="CrowdPulse Home">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-text">
+        <span class="brand-name">CrowdPulse</span>
+        <span class="brand-tagline">AI Prediction</span>
+      </div>
+    </div>
+
+    <!-- Desktop Nav Links -->
+    <nav class="nav-links" role="navigation" aria-label="Main navigation">
+      <a href="#home"      class="nav-link active" id="nav-home"      onclick="navigateTo('home',null,event)"><span class="nav-link-icon">🏠</span>Home</a>
+      <a href="#dashboard" class="nav-link"         id="nav-dashboard" onclick="navigateTo('dashboard',null,event)"><span class="nav-link-icon">📊</span>Dashboard</a>
+      <a href="#search"    class="nav-link"         id="nav-search"    onclick="navigateTo('search',null,event)"><span class="nav-link-icon">🔍</span>Search</a>
+      <a href="#favorites" class="nav-link"         id="nav-favorites" onclick="navigateTo('favorites',null,event)"><span class="nav-link-icon">❤️</span>Favorites</a>
+      <a href="#report"    class="nav-link"         id="nav-report"    onclick="navigateTo('report',null,event)"><span class="nav-link-icon">📢</span>Report</a>
+      <a href="#admin"     class="nav-link"         id="nav-admin"     onclick="navigateTo('admin',null,event)" style="color:var(--color-purple-400)"><span class="nav-link-icon">🛡️</span>Admin</a>
+    </nav>
+
+    <!-- Nav Actions -->
+    <div class="nav-actions">
+      <button class="theme-btn" id="dbConnectNavBtn" onclick="openModal('dbModal')" title="Connect Firebase Database" aria-label="Database Settings">🗄️</button>
+      <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle dark/light mode" aria-label="Toggle theme">🌙</button>
+      <div id="authNavArea"></div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <nav class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+    <a href="#home"      class="nav-link" onclick="navigateTo('home',null,event);closeMobileMenu()">🏠 Home</a>
+    <a href="#dashboard" class="nav-link" onclick="navigateTo('dashboard',null,event);closeMobileMenu()">📊 Dashboard</a>
+    <a href="#search"    class="nav-link" onclick="navigateTo('search',null,event);closeMobileMenu()">🔍 Search Venues</a>
+    <a href="#favorites" class="nav-link" onclick="navigateTo('favorites',null,event);closeMobileMenu()">❤️ Favorites</a>
+    <a href="#report"    class="nav-link" onclick="navigateTo('report',null,event);closeMobileMenu()">📢 Report Crowd</a>
+    <a href="#profile"   class="nav-link" onclick="navigateTo('profile',null,event);closeMobileMenu()">👤 My Profile</a>
+    <a href="#admin"     class="nav-link" onclick="navigateTo('admin',null,event);closeMobileMenu()" style="color:var(--color-purple-400)">🛡️ Admin Panel</a>
+    <a class="nav-link" onclick="openModal('dbModal');closeMobileMenu()" style="color:var(--color-blue-400)">🗄️ Connect Database</a>
+
+    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;" id="mobileAuthArea"></div>
+  </nav>
+</header>
+
+<!-- ============================================================
+     MAIN APP CONTAINER
+     ============================================================ -->
+<div id="app">
+
+<!-- =============================
+     PAGE: HOME / LANDING
+     ============================= -->
+<section id="page-home" class="page active" aria-label="Home">
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-bg">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+      <div class="hero-grid"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="live-dot"></span>
+        Real-Time Queue &amp; Crowd Intelligence — Powered by AI
+      </div>
+
+      <h1 class="hero-title">
+        Never Wait in Long<br>Lines Again.<br>
+        <span class="gradient-text">AI Smart Queue Prediction.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Know the exact crowd level, live queue wait times, and the recommended best time to visit — before stepping out. Powered by AI prediction models and real-time community reports.
+      </p>
+
+      <!-- Hero Search -->
+      <div class="hero-search" role="search">
+        <div class="search-icon-wrap">🔍</div>
+        <input
+          type="text"
+          id="heroSearchInput"
+          placeholder="Search bank, hospital, mall, supermarket…"
+          aria-label="Search for venues"
+          onkeyup="if(event.key==='Enter') doHeroSearch()"
+        >
+        <button class="btn btn-primary btn-lg" onclick="doHeroSearch()" id="heroSearchBtn">Search Live Crowd</button>
+      </div>
+
+      <!-- Quick Category Filters -->
+      <div class="hero-categories" id="heroCategoryChips"></div>
+
+      <!-- Stats -->
+      <div class="hero-stats">
+        <div class="stat-card animate-fade-up stagger-1">
+          <span class="stat-number" data-count="12500">0</span>
+          <span class="stat-label">Live Venues Tracked</span>
+        </div>
+        <div class="stat-card animate-fade-up stagger-2">
+          <span class="stat-number" data-count-pct="94.8">0%</span>
+          <span class="stat-label">AI Accuracy Rate</span>
+        </div>
+        <div class="stat-card animate-fade-up stagger-3">
+          <span class="stat-number">45 min</span>
+          <span class="stat-label">Avg. Time Saved Per Visit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Venues Section -->
+  <div class="section section-sm">
+    <div class="container">
+      <div class="section-head flex-between" style="flex-wrap:wrap; gap:16px;">
+        <div>
+          <div class="section-label">Live Data</div>
+          <h2 class="section-title" style="margin-bottom:0">Live Crowd Predictions &amp; Best Visit Times</h2>
+          <p class="section-desc" style="margin-top:8px">Real-time status updated every 60 seconds by AI + community</p>
+        </div>
+        <div class="chips" id="homeCategoryChips"></div>
+      </div>
+
+      <!-- Venue Cards Grid -->
+      <div class="venues-grid" id="homeVenuesGrid"></div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="section">
+    <div class="container">
+      <div class="section-head centered text-center">
+        <div class="section-label centered">Why CrowdPulse</div>
+        <h2 class="section-title">Why Thousands Trust CrowdPulse</h2>
+        <p class="section-desc">Intelligent features engineered to save your most valuable resource — time.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card animate-fade-up stagger-1">
+          <div class="feature-icon-wrap">🤖</div>
+          <h3 class="feature-title">AI Prediction Engine</h3>
+          <p class="feature-desc">Calculates future crowd levels using machine learning, historical peak hours, day-of-week trends, and real-time community report inputs.</p>
+        </div>
+        <div class="feature-card animate-fade-up stagger-2">
+          <div class="feature-icon-wrap">🕐</div>
+          <h3 class="feature-title">Recommended Visit Windows</h3>
+          <p class="feature-desc">Directly tells you the optimal time to visit banks, hospitals, supermarkets — so you completely avoid peak wait times.</p>
+        </div>
+        <div class="feature-card animate-fade-up stagger-3">
+          <div class="feature-icon-wrap">📢</div>
+          <h3 class="feature-title">Community Live Reports</h3>
+          <p class="feature-desc">Users report live line lengths and wait times, earning community trust badges while keeping everyone updated in real time.</p>
+        </div>
+        <div class="feature-card animate-fade-up stagger-4">
+          <div class="feature-icon-wrap">🔔</div>
+          <h3 class="feature-title">Smart Notifications</h3>
+          <p class="feature-desc">Get automatic alerts when queue lengths at your saved banks or supermarkets drop below your threshold.</p>
+        </div>
+        <div class="feature-card animate-fade-up stagger-5">
+          <div class="feature-icon-wrap">🗺️</div>
+          <h3 class="feature-title">Interactive Maps</h3>
+          <p class="feature-desc">View crowd levels on an interactive map. Spot busy and quiet venues near you at a glance with color-coded pins.</p>
+        </div>
+        <div class="feature-card animate-fade-up stagger-6">
+          <div class="feature-icon-wrap">📊</div>
+          <h3 class="feature-title">Crowd Analytics</h3>
+          <p class="feature-desc">Detailed charts showing peak hours, crowd trends, and historical patterns for every tracked location.</p>
+        </div>
+        <div class="feature-card animate-fade-up stagger-1">
+          <div class="feature-icon-wrap">📱</div>
+          <h3 class="feature-title">PWA &amp; Offline Support</h3>
+          <p class="feature-desc">Install CrowdPulse as an app on your phone. Works offline with cached venue data for last-mile access.</p>
+        </div>
+        <div class="feature-card animate-fade-up stagger-2">
+          <div class="feature-icon-wrap">🛡️</div>
+          <h3 class="feature-title">Trusted Data Quality</h3>
+          <p class="feature-desc">Spam-resistant report moderation. AI cross-checks community data against historical baselines to ensure accuracy.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="section" style="background: var(--bg-card); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-head centered text-center">
+        <div class="section-label centered">Process</div>
+        <h2 class="section-title">How CrowdPulse Works</h2>
+        <p class="section-desc">Four simple steps from search to smarter visiting</p>
+      </div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <h3 class="how-step-title">Search Your Venue</h3>
+          <p class="how-step-desc">Type the name, category, or city of the venue you want to visit.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">2</div>
+          <h3 class="how-step-title">See Live Crowd Data</h3>
+          <p class="how-step-desc">Instantly view current crowd level, estimated wait time, and AI confidence score.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <h3 class="how-step-title">Check Best Visit Time</h3>
+          <p class="how-step-desc">Our AI recommends the optimal window to visit with the shortest possible queue.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">4</div>
+          <h3 class="how-step-title">Go &amp; Report Back</h3>
+          <p class="how-step-desc">Visit confidently, then submit a crowd report to help your community!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Prediction Explainer -->
+  <div class="section">
+    <div class="container">
+      <div class="ai-banner">
+        <div>
+          <div class="section-label" style="justify-content:flex-start; margin-bottom:14px">AI Technology</div>
+          <h2 class="ai-banner-title">How Our AI Predicts Crowd Levels</h2>
+          <p class="ai-banner-desc">CrowdPulse's prediction engine continuously analyses multiple real-world signals to give you accurate, up-to-the-minute forecasts.</p>
+          <div class="ai-factors">
+            <div class="ai-factor"><div class="ai-factor-icon">📅</div>Day of week & public holiday patterns</div>
+            <div class="ai-factor"><div class="ai-factor-icon">⏰</div>Historical peak-hour transaction curves</div>
+            <div class="ai-factor"><div class="ai-factor-icon">👥</div>Live community crowd reports (weighted decay)</div>
+            <div class="ai-factor"><div class="ai-factor-icon">🌦️</div>Weather &amp; local event cross-signals</div>
+            <div class="ai-factor"><div class="ai-factor-icon">📈</div>Exponential smoothing over rolling 7-day window</div>
+          </div>
+        </div>
+        <div class="ai-accuracy-widget">
+          <div class="ai-circle-wrap">
+            <svg class="ai-circle-svg" width="180" height="180" viewBox="0 0 180 180">
+              <defs>
+                <linearGradient id="blueGreenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:var(--color-blue-500)"/>
+                  <stop offset="100%" style="stop-color:var(--color-green-500)"/>
+                </linearGradient>
+              </defs>
+              <circle class="ai-circle-bg" cx="90" cy="90" r="80"/>
+              <circle class="ai-circle-fill" id="aiCircle" cx="90" cy="90" r="80"/>
+            </svg>
+            <div class="ai-circle-text">
+              <span class="ai-circle-pct" id="aiCirclePct">0%</span>
+              <span class="ai-circle-label">AI Accuracy</span>
+            </div>
+          </div>
+          <div class="ai-metrics">
+            <div class="ai-metric"><div class="ai-metric-val">2.3s</div><div class="ai-metric-label">Avg Predict Time</div></div>
+            <div class="ai-metric"><div class="ai-metric-val">1M+</div><div class="ai-metric-label">Data Points/day</div></div>
+            <div class="ai-metric"><div class="ai-metric-val">7-day</div><div class="ai-metric-label">Rolling Window</div></div>
+            <div class="ai-metric"><div class="ai-metric-val">±3 min</div><div class="ai-metric-label">Wait Margin</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="section">
+    <div class="container">
+      <div class="section-head centered text-center">
+        <div class="section-label centered">Community Love</div>
+        <h2 class="section-title">What Our Users Say</h2>
+        <p class="section-desc">Thousands of people save time every day with CrowdPulse</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+          <p class="testimonial-text">"I used to wait 45 minutes at my bank every month-end. CrowdPulse told me to go at 2 PM — only 4 minutes wait. Life changing!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">R</div>
+            <div><div class="testimonial-name">Ravi Kumar</div><div class="testimonial-role">Software Engineer, Bangalore</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+          <p class="testimonial-text">"The hospital prediction feature is brilliant. I checked CrowdPulse before my OPD visit and walked right in — zero waiting time!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">P</div>
+            <div><div class="testimonial-name">Priya Sharma</div><div class="testimonial-role">Teacher, Hyderabad</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+          <p class="testimonial-text">"As a small business owner, I visit the supermarket weekly. CrowdPulse saves me 30+ minutes every single trip. Cannot imagine life without it."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">A</div>
+            <div><div class="testimonial-name">Arjun Mehta</div><div class="testimonial-role">Entrepreneur, Mumbai</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+          <p class="testimonial-text">"The crowd reporting feature feels so rewarding. I report after each visit and love knowing I'm helping others in my neighbourhood."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">S</div>
+            <div><div class="testimonial-name">Sarah M.</div><div class="testimonial-role">Student, Chennai</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="section">
+    <div class="container">
+      <div class="cta-section">
+        <h2 class="cta-title">Start Skipping Queues Today — For Free</h2>
+        <p class="cta-desc">Join 500,000+ smart visitors who never wait in long lines. Completely free, forever.</p>
+        <div class="cta-btns">
+          <button class="btn-cta-white" onclick="openModal('authModal', 'register')" id="ctaSignUpBtn">🚀 Get Started Free</button>
+          <button class="btn-cta-outline" onclick="navigateTo('search')" id="ctaBrowseBtn">🔍 Browse Live Venues</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- =============================
+     PAGE: DASHBOARD
+     ============================= -->
+<section id="page-dashboard" class="page" aria-label="User Dashboard">
+  <div class="section-sm">
+    <div class="container">
+
+      <div class="dashboard-page-head">
+        <div>
+          <h1 class="dashboard-page-title">Live Dashboard</h1>
+          <p class="dashboard-subtitle">Your personalized crowd tracker — updated in real time</p>
+        </div>
+        <button class="btn btn-gradient" onclick="openModal('reportModal')" id="dashReportBtn">📢 Report Crowd</button>
+      </div>
+
+      <!-- Quick Stats Row -->
+      <div class="stats-row" id="dashStatsRow">
+        <div class="stats-mini-card">
+          <div class="stats-mini-icon blue">🏢</div>
+          <div><div class="stats-mini-val" id="dashTotalVenues">0</div><div class="stats-mini-label">Total Venues</div></div>
+        </div>
+        <div class="stats-mini-card">
+          <div class="stats-mini-icon green">🟢</div>
+          <div><div class="stats-mini-val" id="dashLowCount">0</div><div class="stats-mini-label">Low Crowd Now</div></div>
+        </div>
+        <div class="stats-mini-card">
+          <div class="stats-mini-icon amber">📢</div>
+          <div><div class="stats-mini-val" id="dashReportsCount">0</div><div class="stats-mini-label">Reports Today</div></div>
+        </div>
+        <div class="stats-mini-card">
+          <div class="stats-mini-icon purple">❤️</div>
+          <div><div class="stats-mini-val" id="dashFavCount">0</div><div class="stats-mini-label">Saved Favorites</div></div>
+        </div>
+      </div>
+
+      <!-- Main layout -->
+      <div class="dashboard-layout">
+        <div class="dashboard-main">
+          <h3 style="font-size:16px; font-weight:700; margin-bottom:16px;">📍 Nearby Venues &amp; Live Status</h3>
+          <div class="venues-grid" id="dashVenuesGrid"></div>
+        </div>
+
+        <aside>
+          <!-- Notifications -->
+          <div class="sidebar-card">
+            <div class="sidebar-card-head">
+              <div class="sidebar-card-title">🔔 Notifications</div>
+              <button class="btn btn-ghost btn-sm" onclick="clearNotifications()">Clear all</button>
+            </div>
+            <div id="dashNotifList"></div>
+          </div>
+
+          <!-- Favorites -->
+          <div class="sidebar-card">
+            <div class="sidebar-card-head">
+              <div class="sidebar-card-title">❤️ Saved Favorites</div>
+              <button class="btn btn-ghost btn-sm" onclick="navigateTo('favorites')">View all</button>
+            </div>
+            <div id="dashFavList"></div>
+          </div>
+
+          <!-- Recent Reports -->
+          <div class="sidebar-card">
+            <div class="sidebar-card-head">
+              <div class="sidebar-card-title">📋 Recent Reports</div>
+            </div>
+            <div id="dashRecentReports"></div>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================
+     PAGE: SEARCH
+     ============================= -->
+<section id="page-search" class="page" aria-label="Search Venues">
+  <div class="section-sm">
+    <div class="container">
+      <div class="section-head">
+        <h1 class="section-title">Search Venues &amp; Cities</h1>
+        <p class="section-desc">Find banks, hospitals, supermarkets and malls with live crowd &amp; queue data</p>
+      </div>
+
+      <!-- Search Header Panel -->
+      <div class="search-header mb-24">
+        <div class="search-bar-wrap">
+          <div class="search-input-group" style="flex:1">
+            <div class="search-input-icon">🔍</div>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search by name, city or address…"
+              aria-label="Search venues"
+              oninput="filterSearch()"
+            >
+          </div>
+          <button class="btn btn-primary" onclick="filterSearch()" id="searchBtn">Search</button>
+        </div>
+        <div class="search-filters-row">
+          <select class="input-select" id="searchCategoryFilter" onchange="filterSearch()" aria-label="Category filter">
+            <option value="All">All Categories</option>
+            <option value="Bank / ATM">🏦 Bank / ATM</option>
+            <option value="Hospital">🏥 Hospital</option>
+            <option value="Supermarket">🛒 Supermarket</option>
+            <option value="Shopping Mall">🏬 Shopping Mall</option>
+            <option value="Airport">✈️ Airport</option>
+            <option value="Government Office">🏛️ Government Office</option>
+            <option value="Post Office">📮 Post Office</option>
+          </select>
+          <select class="input-select" id="searchCrowdFilter" onchange="filterSearch()" aria-label="Crowd level filter">
+            <option value="All">All Crowd Levels</option>
+            <option value="Low">🟢 Low</option>
+            <option value="Moderate">🟡 Moderate</option>
+            <option value="High">🟠 High</option>
+            <option value="Very High">🔴 Very High</option>
+          </select>
+          <select class="input-select" id="searchSortFilter" onchange="filterSearch()" aria-label="Sort by">
+            <option value="name">Sort: Name A–Z</option>
+            <option value="wait_asc">Sort: Wait ↑</option>
+            <option value="wait_desc">Sort: Wait ↓</option>
+            <option value="confidence">Sort: AI Confidence</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="search-results-meta" id="searchMeta"></p>
+      <div class="venues-grid" id="searchResultsGrid"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================
+     PAGE: LOCATION DETAIL
+     ============================= -->
+<section id="page-detail" class="page" aria-label="Location Detail">
+  <div class="section-sm">
+    <div class="container" id="detailContainer">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================
+     PAGE: CROWD REPORT
+     ============================= -->
+<section id="page-report" class="page" aria-label="Submit Crowd Report">
+  <div class="section-sm">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Community</div>
+        <h1 class="section-title">Submit Crowd Report</h1>
+        <p class="section-desc">Your report updates AI predictions instantly and helps your community plan smarter visits.</p>
+      </div>
+
+      <div class="report-form-page">
+        <form id="reportPageForm" onsubmit="submitCrowdReport(event)">
+
+          <!-- Venue Selector -->
+          <div class="form-group">
+            <label class="form-label" for="reportVenueSelect">📍 Select Venue</label>
+            <select class="input-field" id="reportVenueSelect" required aria-label="Select venue">
+              <option value="">-- Choose a venue --</option>
+            </select>
+          </div>
+
+          <!-- Crowd Level -->
+          <div class="form-group">
+            <label class="form-label">👥 Current Crowd Level</label>
+            <div class="report-level-grid" id="reportLevelGrid">
+              <div class="level-card" data-level="Low" onclick="selectCrowdLevel('Low',this)">
+                <span class="level-card-emoji">🟢</span>
+                <span class="level-card-label">Low</span>
+              </div>
+              <div class="level-card" data-level="Moderate" onclick="selectCrowdLevel('Moderate',this)">
+                <span class="level-card-emoji">🟡</span>
+                <span class="level-card-label">Moderate</span>
+              </div>
+              <div class="level-card" data-level="High" onclick="selectCrowdLevel('High',this)">
+                <span class="level-card-emoji">🟠</span>
+                <span class="level-card-label">High</span>
+              </div>
+              <div class="level-card" data-level="Very High" onclick="selectCrowdLevel('Very High',this)">
+                <span class="level-card-emoji">🔴</span>
+                <span class="level-card-label">Very High</span>
+              </div>
+            </div>
+            <input type="hidden" id="reportCrowdLevel" value="">
+          </div>
+
+          <!-- Wait Time -->
+          <div class="form-group">
+            <label class="form-label">⏱️ Estimated Wait Time</label>
+            <div class="range-wrap">
+              <input type="range" class="range-slider" id="reportWaitSlider" min="0" max="90" value="10"
+                oninput="document.getElementById('reportWaitDisplay').textContent=this.value">
+              <span class="range-val" id="reportWaitDisplay">10</span>
+              <span class="text-muted" style="font-size:13px;">min</span>
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="form-group">
+            <label class="form-label" for="reportComment">💬 Comments <span style="color:var(--text-muted); font-weight:400">(optional)</span></label>
+            <textarea class="input-field" id="reportComment" rows="3" placeholder="E.g. Counter 3 is open, queue moving fast, ATM is down…" aria-label="Optional comments"></textarea>
+          </div>
+
+          <!-- Photo Upload -->
+          <div class="form-group">
+            <label class="form-label">📷 Attach Photo <span style="color:var(--text-muted); font-weight:400">(optional)</span></label>
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('photoFileInput').click()"
+              ondragover="event.preventDefault();this.classList.add('dragging')"
+              ondragleave="this.classList.remove('dragging')"
+              ondrop="handlePhotoDrop(event)">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Click to upload or drag &amp; drop</div>
+              <div class="upload-sub">PNG, JPG, WEBP up to 5MB</div>
+              <div id="photoPreviewWrap" style="margin-top:12px; display:none;">
+                <img id="photoPreview" style="max-height:120px; border-radius:8px; margin:0 auto;" alt="Preview">
+              </div>
+            </div>
+            <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
+          </div>
+
+          <button type="submit" class="btn btn-gradient btn-full btn-lg" id="reportSubmitBtn">
+            📢 Submit Live Report
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================
+     PAGE: FAVORITES
+     ============================= -->
+<section id="page-favorites" class="page" aria-label="Favorite Venues">
+  <div class="section-sm">
+    <div class="container">
+      <div class="favorites-head">
+        <div>
+          <h1 class="section-title">Your Favorite Venues</h1>
+          <p class="section-desc">Saved places with real-time crowd synchronization</p>
+        </div>
+        <button class="btn btn-secondary" onclick="navigateTo('search')" id="addMoreFavsBtn">+ Add More</button>
+      </div>
+      <div class="venues-grid" id="favoritesGrid"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================
+     PAGE: PROFILE
+     ============================= -->
+<section id="page-profile" class="page" aria-label="User Profile">
+  <div class="section-sm">
+    <div class="container">
+      <div class="section-head">
+        <h1 class="section-title">My Profile</h1>
+        <p class="section-desc">Manage your account, reports, and notification preferences</p>
+      </div>
+      <div class="profile-layout">
+
+        <!-- Left: Avatar card -->
+        <div>
+          <div class="profile-avatar-card">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar" id="profileAvatarCircle">U</div>
+              <div class="profile-avatar-edit" onclick="document.getElementById('avatarFileInput').click()" title="Change photo">✏️</div>
+            </div>
+            <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarChange(event)">
+            <div class="profile-name" id="profileDisplayName">User</div>
+            <div class="profile-email" id="profileEmailDisplay">-</div>
+            <div class="profile-badges">
+              <span class="badge badge-blue">✅ Verified</span>
+              <span class="badge badge-green" id="profileReporterBadge" style="display:none">📢 Reporter</span>
+              <span class="badge badge-purple" id="profilePowerBadge" style="display:none">⚡ Power User</span>
+            </div>
+            <div class="profile-stats-row">
+              <div class="profile-stat"><div class="profile-stat-val" id="profileReportCount">0</div><div class="profile-stat-label">Reports</div></div>
+              <div class="profile-stat"><div class="profile-stat-val" id="profileFavCount">0</div><div class="profile-stat-label">Favorites</div></div>
+            </div>
+            <button class="btn btn-danger btn-full btn-sm" onclick="handleLogout()" id="profileLogoutBtn">🚪 Sign Out</button>
+          </div>
+        </div>
+
+        <!-- Right: Edit form + History -->
+        <div>
+          <!-- Edit Profile -->
+          <div class="sidebar-card mb-20">
+            <div class="sidebar-card-head">
+              <div class="sidebar-card-title">✏️ Edit Profile</div>
+            </div>
+            <form onsubmit="saveProfile(event)" id="profileEditForm">
+              <div class="form-group">
+                <label class="form-label" for="profileNameInput">Full Name</label>
+                <input class="input-field" type="text" id="profileNameInput" placeholder="Your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profileEmailInput">Email Address</label>
+                <input class="input-field" type="email" id="profileEmailInput" placeholder="email@example.com">
+              </div>
+              <button type="submit" class="btn btn-primary" id="profileSaveBtn">Save Changes</button>
+            </form>
+          </div>
+
+          <!-- Notification Preferences -->
+          <div class="sidebar-card mb-20">
+            <div class="sidebar-card-head">
+              <div class="sidebar-card-title">🔔 Notification Preferences</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div class="toggle-wrap">
+                <button class="toggle on" id="toggleQueueAlerts" onclick="toggleNotifPref('queueAlerts',this)"></button>
+                <div><div style="font-size:13.5px; font-weight:600;">Queue Drop Alerts</div><div class="form-hint">Notify when saved venue queue drops below threshold</div></div>
+              </div>
+              <div class="toggle-wrap">
+                <button class="toggle on" id="toggleFavUpdates" onclick="toggleNotifPref('favUpdates',this)"></button>
+                <div><div style="font-size:13.5px; font-weight:600;">Favorite Venue Updates</div><div class="form-hint">Real-time crowd changes for saved places</div></div>
+              </div>
+              <div class="toggle-wrap">
+                <button class="toggle" id="toggleWeeklyDigest" onclick="toggleNotifPref('weeklyDigest',this)"></button>
+                <div><div style="font-size:13.5px; font-weight:600;">Weekly Digest</div><div class="form-hint">Weekly summary of crowd trends in your area</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- My Reports History -->
+          <div class="sidebar-card">
+            <div class="sidebar-card-head">
+              <div class="sidebar-card-title">📋 My Submitted Reports</div>
+            </div>
+            <div id="profileReportsList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================
+     PAGE: ADMIN DASHBOARD
+     ============================= -->
+<section id="page-admin" class="page" aria-label="Admin Dashboard">
+  <div class="admin-layout">
+
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-head">
+        <div class="admin-sidebar-title">Admin Panel</div>
+      </div>
+      <nav>
+        <div class="admin-nav-link active" id="adminNav-overview"   onclick="switchAdminTab('overview')"  ><span class="admin-nav-icon">📊</span>Overview</div>
+        <div class="admin-nav-link"        id="adminNav-venues"     onclick="switchAdminTab('venues')"    ><span class="admin-nav-icon">🏢</span>Venues</div>
+        <div class="admin-nav-link"        id="adminNav-users"      onclick="switchAdminTab('users')"     ><span class="admin-nav-icon">👥</span>Users</div>
+        <div class="admin-nav-link"        id="adminNav-reports"    onclick="switchAdminTab('reports')"   ><span class="admin-nav-icon">📋</span>Reports</div>
+        <div class="admin-nav-link"        id="adminNav-analytics"  onclick="switchAdminTab('analytics')" ><span class="admin-nav-icon">📈</span>Analytics</div>
+        <div class="admin-nav-link"        id="adminNav-notify"     onclick="switchAdminTab('notify')"    ><span class="admin-nav-icon">🔔</span>Notifications</div>
+        <div class="admin-nav-link"        id="adminNav-categories" onclick="switchAdminTab('categories')"><span class="admin-nav-icon">🏷️</span>Categories</div>
+      </nav>
+    </aside>
+
+    <!-- Admin Main Content -->
+    <div class="admin-main" id="adminMainContent">
+
+      <!-- OVERVIEW TAB -->
+      <div id="adminTab-overview" class="admin-tab">
+        <div class="admin-page-head">
+          <h1 class="admin-page-title">📊 Platform Overview</h1>
+          <span class="badge badge-green" id="adminLiveIndicator">🟢 Live</span>
+        </div>
+
+        <div class="admin-stats-bar">
+          <div class="admin-stat blue">
+            <div class="admin-stat-label">Total Venues</div>
+            <div class="admin-stat-val" id="adminStatVenues">0</div>
+            <div class="admin-stat-sub">Active listings</div>
+          </div>
+          <div class="admin-stat green">
+            <div class="admin-stat-label">Community Reports</div>
+            <div class="admin-stat-val" id="adminStatReports">0</div>
+            <div class="admin-stat-sub">All time</div>
+          </div>
+          <div class="admin-stat purple">
+            <div class="admin-stat-label">Registered Users</div>
+            <div class="admin-stat-val" id="adminStatUsers">0</div>
+            <div class="admin-stat-sub">Active accounts</div>
+          </div>
+          <div class="admin-stat amber">
+            <div class="admin-stat-label">AI Model Accuracy</div>
+            <div class="admin-stat-val">94.8%</div>
+            <div class="admin-stat-sub">Last 7 days</div>
+          </div>
+        </div>
+
+        <!-- Overview Charts -->
+        <div class="admin-charts-grid">
+          <div class="chart-container">
+            <div class="chart-head">
+              <div><div class="chart-title">Daily Reports Submitted</div><div class="chart-subtitle">Last 7 days</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="adminReportsChart"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <div class="chart-head">
+              <div><div class="chart-title">Venues by Category</div><div class="chart-subtitle">Distribution</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="adminCategoryChart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="admin-table-card">
+          <div class="admin-table-toolbar">
+            <div class="chart-title">Recent Activity</div>
+          </div>
+          <div id="adminRecentActivity" style="padding:16px 20px;"></div>
+        </div>
+      </div>
+
+      <!-- VENUES TAB -->
+      <div id="adminTab-venues" class="admin-tab" style="display:none">
+        <div class="admin-page-head">
+          <h1 class="admin-page-title">🏢 Venue Management</h1>
+          <button class="btn btn-primary" onclick="openModal('addVenueModal')" id="adminAddVenueBtn">+ Add Venue</button>
+        </div>
+        <div class="admin-table-card">
+          <div class="admin-table-toolbar">
+            <div class="admin-table-search">
+              <span style="color:var(--text-muted)">🔍</span>
+              <input type="text" id="adminVenueSearch" placeholder="Search venues…" oninput="renderAdminVenuesTable()" aria-label="Search admin venues">
+            </div>
+            <div style="display:flex; gap:8px;">
+              <select class="input-select" id="adminVenueCategoryFilter" onchange="renderAdminVenuesTable()" aria-label="Filter by category" style="font-size:13px; padding:8px 12px;">
+                <option value="All">All Categories</option>
+                <option value="Bank / ATM">Bank / ATM</option>
+                <option value="Hospital">Hospital</option>
+                <option value="Supermarket">Supermarket</option>
+                <option value="Shopping Mall">Shopping Mall</option>
+                <option value="Airport">Airport</option>
+                <option value="Government Office">Government Office</option>
+                <option value="Post Office">Post Office</option>
+              </select>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table" id="adminVenuesTable">
+              <thead>
+                <tr>
+                  <th>Venue Name</th>
+                  <th>Category</th>
+                  <th>City</th>
+                  <th>Crowd Status</th>
+                  <th>Wait Time</th>
+                  <th>Best Visit</th>
+                  <th>Confidence</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminVenuesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS TAB -->
+      <div id="adminTab-users" class="admin-tab" style="display:none">
+        <div class="admin-page-head">
+          <h1 class="admin-page-title">👥 User Management</h1>
+        </div>
+        <div class="admin-table-card">
+          <div class="admin-table-toolbar">
+            <div class="admin-table-search">
+              <span style="color:var(--text-muted)">🔍</span>
+              <input type="text" id="adminUserSearch" placeholder="Search users…" oninput="renderAdminUsersTable()" aria-label="Search users">
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Joined</th>
+                  <th>Reports</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS TAB -->
+      <div id="adminTab-reports" class="admin-tab" style="display:none">
+        <div class="admin-page-head">
+          <h1 class="admin-page-title">📋 Moderate Reports</h1>
+        </div>
+        <div id="adminReportsList"></div>
+      </div>
+
+      <!-- ANALYTICS TAB -->
+      <div id="adminTab-analytics" class="admin-tab" style="display:none">
+        <div class="admin-page-head">
+          <h1 class="admin-page-title">📈 Platform Analytics</h1>
+        </div>
+        <div class="admin-charts-grid">
+          <div class="chart-container">
+            <div class="chart-head">
+              <div><div class="chart-title">Peak Hours Heatmap</div><div class="chart-subtitle">Crowd activity by hour</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="adminPeakHoursChart"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <div class="chart-head">
+              <div><div class="chart-title">Average Queue by Category</div><div class="chart-subtitle">In minutes</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="adminQueueChart"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <div class="chart-head">
+              <div><div class="chart-title">Weekly Report Volume</div><div class="chart-subtitle">Community engagement</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="adminWeeklyChart"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <div class="chart-head">
+              <div><div class="chart-title">AI Accuracy Trend</div><div class="chart-subtitle">Monthly accuracy %</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="adminAccuracyChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS TAB -->
+      <div id="adminTab-notify" class="admin-tab" style="display:none">
+        <div class="admin-page-head">
+          <h1 class="admin-page-title">🔔 Send Notifications</h1>
+        </div>
+        <div class="notif-form">
+          <form onsubmit="sendAdminNotification(event)" id="adminNotifForm">
+            <div class="form-group">
+              <label class="form-label" for="notifTarget">Send To</label>
+              <select class="input-field" id="notifTarget" aria-label="Notification target">
+                <option value="all">All Users</option>
+                <option value="active">Active Users (last 7 days)</option>
+                <option value="reporters">Community Reporters</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="notifTitle">Notification Title</label>
+              <input class="input-field" type="text" id="notifTitle" placeholder="e.g. Queue Drop Alert at SBI Main Branch" required aria-label="Notification title">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="notifMsg">Message</label>
+              <textarea class="input-field" id="notifMsg" rows="4" placeholder="Write your notification message…" required aria-label="Notification message"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="notifType">Type</label>
+              <select class="input-field" id="notifType" aria-label="Notification type">
+                <option value="info">ℹ️ Info</option>
+                <option value="alert">⚠️ Alert</option>
+                <option value="success">✅ Good News</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-gradient btn-lg" id="sendNotifBtn">📤 Send Notification</button>
+          </form>
+          <div class="separator"></div>
+          <h3 style="font-size:15px; font-weight:700; margin-bottom:14px;">Sent History</h3>
+          <div id="adminSentNotifList"></div>
+        </div>
+      </div>
+
+      <!-- CATEGORIES TAB -->
+      <div id="adminTab-categories" class="admin-tab" style="display:none">
+        <div class="admin-page-head">
+          <h1 class="admin-page-title">🏷️ Category Management</h1>
+          <button class="btn btn-primary" onclick="openModal('addCategoryModal')" id="adminAddCatBtn">+ Add Category</button>
+        </div>
+        <div class="admin-table-card">
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr><th>Icon</th><th>Category Name</th><th>Venues Count</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="adminCategoriesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-main -->
+  </div><!-- /admin-layout -->
+</section>
+
+
+</div><!-- /app -->
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-main">
+      <div class="footer-brand-col">
+        <div class="footer-brand">
+          <div class="footer-logo">⚡</div>
+          <span class="footer-brand-name">CrowdPulse</span>
+        </div>
+        <p class="footer-desc">AI-Powered Smart Queueless Prediction Platform. Know before you go — save time, reduce stress.</p>
+        <div class="footer-socials">
+          <div class="social-btn" title="Twitter">𝕏</div>
+          <div class="social-btn" title="LinkedIn">in</div>
+          <div class="social-btn" title="Instagram">📷</div>
+          <div class="social-btn" title="GitHub">⌥</div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <div class="footer-links-list">
+          <span class="footer-link" onclick="navigateTo('home')">Home</span>
+          <span class="footer-link" onclick="navigateTo('dashboard')">Live Dashboard</span>
+          <span class="footer-link" onclick="navigateTo('search')">Search Venues</span>
+          <span class="footer-link" onclick="navigateTo('report')">Submit Report</span>
+          <span class="footer-link" onclick="navigateTo('favorites')">My Favorites</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links-list">
+          <span class="footer-link">About CrowdPulse</span>
+          <span class="footer-link">Blog</span>
+          <span class="footer-link">Careers</span>
+          <span class="footer-link">Press Kit</span>
+          <span class="footer-link">Contact</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links-list">
+          <span class="footer-link">Privacy Policy</span>
+          <span class="footer-link">Terms of Service</span>
+          <span class="footer-link">Cookie Policy</span>
+          <span class="footer-link">GDPR</span>
+          <span class="footer-link">Accessibility</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CrowdPulse AI Platform. All rights reserved.</span>
+      <span style="display:flex; gap:12px; align-items:center;">
+        <span class="badge badge-green">🟢 All Systems Operational</span>
+        <span>Made with ❤️ for smarter cities</span>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     MODALS
+     ============================================================ -->
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal('authModal')" aria-label="Close">×</button>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="authTabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="authTabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+
+    <!-- Sign In Panel -->
+    <div id="authPanelSignIn">
+      <h2 class="modal-title" id="authModalTitle">Welcome Back!</h2>
+      <p class="modal-sub">Sign in to access your personalized queue tracker</p>
+
+      <button class="btn-google" onclick="handleGoogleSignIn()" id="googleSignInBtn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4814h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2581h2.9086C16.6582 14.1327 17.64 11.8718 17.64 9.2045z" fill="#4285F4"/><path d="M9 18c2.43 0 4.4673-.806 5.9564-2.1805l-2.9086-2.2581c-.8055.54-1.8359.8591-3.0478.8591-2.3441 0-4.3282-1.5836-5.0368-3.7109H.9574v2.3318C2.4382 15.9832 5.4818 18 9 18z" fill="#34A853"/><path d="M3.9632 10.71c-.18-.54-.2827-1.1168-.2827-1.71s.1027-1.17.2827-1.71V4.9582H.9573C.3477 6.1731 0 7.5477 0 9s.3477 2.8268.9573 4.0418L3.9632 10.71z" fill="#FBBC05"/><path d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5813-2.5813C13.4636.8918 11.4264 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582l3.0059 2.3318C4.6718 5.1631 6.6559 3.5795 9 3.5795z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-divider">or</div>
+
+      <form id="signInForm" onsubmit="handleEmailSignIn(event)">
+        <div class="form-group">
+          <label class="form-label" for="signInEmail">Email</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📧</span>
+            <input class="input-field" type="email" id="signInEmail" placeholder="name@example.com" required autocomplete="email">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signInPassword" style="display:flex; justify-content:space-between;">
+            Password <a style="font-weight:400; color:var(--color-blue-400); cursor:pointer; font-size:12px;" onclick="switchAuthTab('forgot')">Forgot?</a>
+          </label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="input-field" type="password" id="signInPassword" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="signInSubmitBtn">Sign In</button>
+      </form>
+    </div>
+
+    <!-- Sign Up Panel -->
+    <div id="authPanelSignUp" style="display:none">
+      <h2 class="modal-title">Create Account</h2>
+      <p class="modal-sub">Join 500,000+ users who skip queues every day</p>
+
+      <button class="btn-google" onclick="handleGoogleSignIn()" id="googleSignUpBtn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4814h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2581h2.9086C16.6582 14.1327 17.64 11.8718 17.64 9.2045z" fill="#4285F4"/><path d="M9 18c2.43 0 4.4673-.806 5.9564-2.1805l-2.9086-2.2581c-.8055.54-1.8359.8591-3.0478.8591-2.3441 0-4.3282-1.5836-5.0368-3.7109H.9574v2.3318C2.4382 15.9832 5.4818 18 9 18z" fill="#34A853"/><path d="M3.9632 10.71c-.18-.54-.2827-1.1168-.2827-1.71s.1027-1.17.2827-1.71V4.9582H.9573C.3477 6.1731 0 7.5477 0 9s.3477 2.8268.9573 4.0418L3.9632 10.71z" fill="#FBBC05"/><path d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5813-2.5813C13.4636.8918 11.4264 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582l3.0059 2.3318C4.6718 5.1631 6.6559 3.5795 9 3.5795z" fill="#EA4335"/></svg>
+        Sign Up with Google
+      </button>
+
+      <div class="auth-divider">or</div>
+
+      <form id="signUpForm" onsubmit="handleEmailSignUp(event)">
+        <div class="form-group">
+          <label class="form-label" for="signUpName">Full Name</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">👤</span>
+            <input class="input-field" type="text" id="signUpName" placeholder="John Doe" required autocomplete="name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signUpEmail">Email</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📧</span>
+            <input class="input-field" type="email" id="signUpEmail" placeholder="name@example.com" required autocomplete="email">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signUpPassword">Password</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="input-field" type="password" id="signUpPassword" placeholder="Min 8 characters" required autocomplete="new-password" minlength="8">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-gradient btn-full btn-lg" id="signUpSubmitBtn">Create Free Account</button>
+        <p class="form-hint text-center mt-8">By signing up you agree to our <a style="color:var(--color-blue-400)">Terms</a> &amp; <a style="color:var(--color-blue-400)">Privacy Policy</a></p>
+      </form>
+    </div>
+
+    <!-- Forgot Password Panel -->
+    <div id="authPanelForgot" style="display:none">
+      <h2 class="modal-title">Reset Password</h2>
+      <p class="modal-sub">We'll send a reset link to your email address</p>
+      <form id="forgotForm" onsubmit="handleForgotPassword(event)">
+        <div class="form-group">
+          <label class="form-label" for="forgotEmail">Email Address</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📧</span>
+            <input class="input-field" type="email" id="forgotEmail" placeholder="name@example.com" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="forgotSubmitBtn">Send Reset Link</button>
+        <div class="auth-footer-link"><a onclick="switchAuthTab('signin')">← Back to Sign In</a></div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- REPORT CROWD MODAL (quick) -->
+<div class="modal-overlay" id="reportModal" role="dialog" aria-modal="true" aria-label="Quick Crowd Report">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal('reportModal')" aria-label="Close">×</button>
+    <h2 class="modal-title">📢 Report Crowd Level</h2>
+    <p class="modal-sub" id="reportModalSub">Submit a quick crowd update for this venue</p>
+    <form onsubmit="submitQuickReport(event)" id="quickReportForm">
+      <div class="form-group">
+        <label class="form-label" for="quickReportVenue">Venue</label>
+        <select class="input-field" id="quickReportVenue" required aria-label="Select venue"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Crowd Level</label>
+        <div class="report-level-grid" id="quickReportLevelGrid">
+          <div class="level-card" data-level="Low" onclick="selectQuickLevel('Low',this)"><span class="level-card-emoji">🟢</span><span class="level-card-label">Low</span></div>
+          <div class="level-card" data-level="Moderate" onclick="selectQuickLevel('Moderate',this)"><span class="level-card-emoji">🟡</span><span class="level-card-label">Moderate</span></div>
+          <div class="level-card" data-level="High" onclick="selectQuickLevel('High',this)"><span class="level-card-emoji">🟠</span><span class="level-card-label">High</span></div>
+          <div class="level-card" data-level="Very High" onclick="selectQuickLevel('Very High',this)"><span class="level-card-emoji">🔴</span><span class="level-card-label">Very High</span></div>
+        </div>
+        <input type="hidden" id="quickReportLevel" value="">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Wait Time: <strong id="quickWaitDisplay">10</strong> min</label>
+        <input type="range" class="range-slider" min="0" max="90" value="10" id="quickWaitSlider"
+          oninput="document.getElementById('quickWaitDisplay').textContent=this.value">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="quickComment">Comment (optional)</label>
+        <textarea class="input-field" id="quickComment" rows="2" placeholder="Quick note for the community…" aria-label="Optional comment"></textarea>
+      </div>
+      <button type="submit" class="btn btn-gradient btn-full" id="quickReportSubmitBtn">Submit Report</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADD VENUE MODAL (Admin) -->
+<div class="modal-overlay" id="addVenueModal" role="dialog" aria-modal="true" aria-label="Add New Venue">
+  <div class="modal-card wide">
+    <button class="modal-close" onclick="closeModal('addVenueModal')" aria-label="Close">×</button>
+    <h2 class="modal-title">➕ Add New Venue</h2>
+    <p class="modal-sub">Add a new location to the CrowdPulse database</p>
+    <form onsubmit="handleAddVenue(event)" id="addVenueForm">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="form-group">
+          <label class="form-label" for="newVenueName">Venue Name *</label>
+          <input class="input-field" type="text" id="newVenueName" placeholder="e.g. SBI Main Branch" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newVenueCategory">Category *</label>
+          <select class="input-field" id="newVenueCategory" required>
+            <option value="">Select category</option>
+            <option value="Bank / ATM">Bank / ATM</option>
+            <option value="Hospital">Hospital</option>
+            <option value="Supermarket">Supermarket</option>
+            <option value="Shopping Mall">Shopping Mall</option>
+            <option value="Airport">Airport</option>
+            <option value="Government Office">Government Office</option>
+            <option value="Post Office">Post Office</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newVenueAddress">Address *</label>
+          <input class="input-field" type="text" id="newVenueAddress" placeholder="Street, area, city" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newVenueCity">City *</label>
+          <input class="input-field" type="text" id="newVenueCity" placeholder="e.g. Bangalore" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newVenueCrowdLevel">Initial Crowd Level</label>
+          <select class="input-field" id="newVenueCrowdLevel">
+            <option value="Low">Low</option>
+            <option value="Moderate" selected>Moderate</option>
+            <option value="High">High</option>
+            <option value="Very High">Very High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newVenueWait">Initial Wait Time (min)</label>
+          <input class="input-field" type="number" id="newVenueWait" value="10" min="0" max="120">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newVenueOpenTime">Opening Hours</label>
+          <input class="input-field" type="text" id="newVenueOpenTime" placeholder="e.g. 9:00 AM – 5:00 PM">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newVenueBestTime">Best Visit Window</label>
+          <input class="input-field" type="text" id="newVenueBestTime" placeholder="e.g. 2:00 PM – 3:30 PM">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-gradient btn-full btn-lg" id="addVenueSubmitBtn">Add Venue to Platform</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADD CATEGORY MODAL (Admin) -->
+<div class="modal-overlay" id="addCategoryModal" role="dialog" aria-modal="true" aria-label="Add Category">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal('addCategoryModal')" aria-label="Close">×</button>
+    <h2 class="modal-title">🏷️ Add Category</h2>
+    <form onsubmit="handleAddCategory(event)" id="addCategoryForm">
+      <div class="form-group">
+        <label class="form-label" for="newCatIcon">Emoji Icon</label>
+        <input class="input-field" type="text" id="newCatIcon" placeholder="🏦" maxlength="4" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="newCatName">Category Name</label>
+        <input class="input-field" type="text" id="newCatName" placeholder="e.g. Post Office" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Add Category</button>
+    </form>
+  </div>
+</div>
+
+<!-- DATABASE CONNECTION MODAL -->
+<div class="modal-overlay" id="dbModal" role="dialog" aria-modal="true" aria-label="Connect Database">
+  <div class="modal-card wide">
+    <button class="modal-close" onclick="closeModal('dbModal')" aria-label="Close">×</button>
+    <h2 class="modal-title">🗄️ Connect Cloud Firestore Database</h2>
+    <p class="modal-sub">Enter your Firebase Project credentials to sync live crowd data &amp; authentication</p>
+
+    <form onsubmit="handleConnectDatabase(event)" id="dbConnectForm">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="form-group">
+          <label class="form-label" for="dbApiKey">API Key *</label>
+          <input class="input-field" type="text" id="dbApiKey" placeholder="AIzaSy..." required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dbProjectId">Project ID *</label>
+          <input class="input-field" type="text" id="dbProjectId" placeholder="crowdpulse-ai" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dbAuthDomain">Auth Domain</label>
+          <input class="input-field" type="text" id="dbAuthDomain" placeholder="crowdpulse-ai.firebaseapp.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dbStorageBucket">Storage Bucket</label>
+          <input class="input-field" type="text" id="dbStorageBucket" placeholder="crowdpulse-ai.appspot.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dbSenderId">Messaging Sender ID</label>
+          <input class="input-field" type="text" id="dbSenderId" placeholder="987654321012">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dbAppId">App ID</label>
+          <input class="input-field" type="text" id="dbAppId" placeholder="1:987654321012:web:a1b2c3d4e5f67890">
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button type="submit" class="btn btn-gradient btn-full btn-lg" id="dbConnectBtn">🔌 Connect Live Database</button>
+        <button type="button" class="btn btn-secondary" onclick="resetDatabaseCredentials()">Reset Demo</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- OFFLINE BANNER -->
+<div class="offline-banner" id="offlineBanner" role="status">
+  <span>📡 Offline Mode</span> — Using cached crowd data &amp; predictions
+</div>
+
+<!-- MOBILE BOTTOM NAVIGATION BAR -->
+<nav class="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+  <button class="bottom-nav-item active" id="bnav-home" onclick="navigateTo('home',null,event)">
+    <span class="bottom-nav-icon">🏠</span>
+    <span>Home</span>
+  </button>
+  <button class="bottom-nav-item" id="bnav-dashboard" onclick="navigateTo('dashboard',null,event)">
+    <span class="bottom-nav-icon">📊</span>
+    <span>Live</span>
+  </button>
+  <button class="bottom-nav-item" id="bnav-search" onclick="navigateTo('search',null,event)">
+    <span class="bottom-nav-icon">🔍</span>
+    <span>Search</span>
+  </button>
+  <button class="bottom-nav-item" id="bnav-report" onclick="navigateTo('report',null,event)">
+    <span class="bottom-nav-icon">📢</span>
+    <span>Report</span>
+  </button>
+  <button class="bottom-nav-item" id="bnav-favorites" onclick="navigateTo('favorites',null,event)">
+    <span class="bottom-nav-icon">❤️</span>
+    <span>Saved</span>
+  </button>
+  <button class="bottom-nav-item" id="bnav-profile" onclick="navigateTo('profile',null,event)">
+    <span class="bottom-nav-icon">👤</span>
+    <span>Profile</span>
+  </button>
+</nav>
+
+<!-- PWA INSTALL PROMPT BANNER -->
+<div class="pwa-install-banner" id="pwaInstallBanner" role="dialog" aria-label="Install CrowdPulse App">
+  <div class="pwa-install-info">
+    <div class="pwa-install-icon">⚡</div>
+    <div>
+      <div class="pwa-install-title">Install CrowdPulse App</div>
+      <div class="pwa-install-sub">Fast, offline access &amp; instant queue alerts</div>
+    </div>
+  </div>
+  <div class="pwa-install-actions">
+    <button class="btn btn-primary btn-sm" onclick="installPWAApp()" id="pwaInstallBtn">📲 Install</button>
+    <button class="pwa-close-btn" onclick="dismissPWAInstallPrompt()" aria-label="Dismiss">✕</button>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<!-- Firebase SDK (full compat suite) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+
+<!-- App scripts -->
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
+
+

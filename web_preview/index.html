@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrowdPulse – AI-Powered Smart Queue & Crowd Analytics</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js for live analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo">⚡</div>
+        <div>
+          <h1>CrowdPulse</h1>
+          <p class="subtitle">AI-Powered Queue & Crowd Prediction</p>
+        </div>
+      </div>
+      <div class="user-badge" id="userBadge">
+        <span class="user-name">Guest User</span>
+        <button class="btn-auth" id="authBtn" onclick="toggleAuthModal()">Sign In</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+        <span class="icon">🏠</span> Home
+      </button>
+      <button class="nav-btn" data-tab="search" onclick="switchTab('search')">
+        <span class="icon">🔍</span> Search
+      </button>
+      <button class="nav-btn" data-tab="map" onclick="switchTab('map')">
+        <span class="icon">🗺️</span> Heatmap
+      </button>
+      <button class="nav-btn" data-tab="favorites" onclick="switchTab('favorites')">
+        <span class="icon">❤️</span> Favorites
+      </button>
+      <button class="nav-btn" data-tab="profile" onclick="switchTab('profile')">
+        <span class="icon">👤</span> Profile
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- HOME TAB -->
+      <section id="tab-home" class="tab-page active">
+        <!-- Category Filter Pills -->
+        <div class="category-bar" id="categoryBar">
+          <!-- Filled by JS -->
+        </div>
+
+        <!-- Venue Feed -->
+        <div class="section-title">
+          <h2>Nearby Venues (Live Streams)</h2>
+          <span class="live-indicator"><span class="dot"></span> Live Firestore Sync</span>
+        </div>
+        <div class="venue-grid" id="venueGrid">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- SEARCH TAB -->
+      <section id="tab-search" class="tab-page">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search by venue name, city, category..." oninput="handleSearch()">
+        </div>
+        <div class="venue-grid" id="searchGrid">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- MAP TAB -->
+      <section id="tab-map" class="tab-page">
+        <div class="map-wrapper">
+          <div class="map-legend">
+            <span class="legend-item"><span class="badge low"></span> Low</span>
+            <span class="legend-item"><span class="badge moderate"></span> Moderate</span>
+            <span class="legend-item"><span class="badge high"></span> High</span>
+          </div>
+          <div class="interactive-map" id="mapCanvas">
+            <!-- Simulated Map Canvas with markers -->
+          </div>
+          <div class="map-card" id="mapCard" style="display: none;">
+            <!-- Filled on Marker Click -->
+          </div>
+        </div>
+      </section>
+
+      <!-- FAVORITES TAB -->
+      <section id="tab-favorites" class="tab-page">
+        <div class="section-title">
+          <h2>Your Bookmarked Venues</h2>
+        </div>
+        <div class="venue-grid" id="favoritesGrid">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- PROFILE TAB -->
+      <section id="tab-profile" class="tab-page">
+        <div class="profile-card">
+          <div class="profile-avatar" id="profileAvatar">U</div>
+          <h2 id="profileName">CrowdPulse User</h2>
+          <p id="profileEmail">user@crowdpulse.ai</p>
+
+          <div class="profile-settings">
+            <div class="setting-item">
+              <span>Push Notifications</span>
+              <input type="checkbox" id="notifToggle" checked>
+            </div>
+            <div class="setting-item">
+              <span>Offline Mode Sync</span>
+              <span class="status-active">Enabled</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('detailModal')">&times;</button>
+        <div id="detailModalBody"></div>
+      </div>
+    </div>
+
+    <!-- Report Crowd Modal -->
+    <div class="modal-overlay" id="reportModal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('reportModal')">&times;</button>
+        <h2>Report Current Crowd</h2>
+        <p class="subtitle" id="reportVenueTitle">Venue Name</p>
+
+        <form id="reportForm" onsubmit="submitReport(event)">
+          <label>Crowd Density</label>
+          <div class="level-selector">
+            <button type="button" class="level-btn" data-level="Low" onclick="selectLevel('Low')">🟢 Low</button>
+            <button type="button" class="level-btn active" data-level="Moderate" onclick="selectLevel('Moderate')">🟡 Moderate</button>
+            <button type="button" class="level-btn" data-level="High" onclick="selectLevel('High')">🔴 High</button>
+          </div>
+
+          <label>Estimated Wait Time: <span id="waitDisplay">10</span> mins</label>
+          <input type="range" id="waitRange" min="0" max="60" value="10" oninput="document.getElementById('waitDisplay').innerText = this.value">
+
+          <label>Comment (Optional)</label>
+          <textarea id="reportComment" placeholder="Counters moving smoothly..."></textarea>
+
+          <button type="submit" class="btn-primary">Submit Live Report</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

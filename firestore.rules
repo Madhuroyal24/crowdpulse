@@ -1,0 +1,131 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================
+    // HELPER FUNCTIONS
+    // ============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
+    function isValidCrowdLevel(level) {
+      return level in ['Low', 'Moderate', 'High', 'Very High'];
+    }
+
+    function isValidWaitTime(t) {
+      return t is int && t >= 0 && t <= 120;
+    }
+
+    // ============================================================
+    // USERS COLLECTION
+    // ============================================================
+    match /users/{userId} {
+      // Public read of basic profile fields
+      allow get: if isAuthenticated();
+      allow list: if isAdmin();
+
+      // Create own profile or admin creates
+      allow create: if isOwner(userId) || isAdmin();
+
+      // Update own profile; cannot escalate own role
+      allow update: if (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'admin']))
+                    || isAdmin();
+
+      // Only admin can delete users
+      allow delete: if isAdmin();
+    }
+
+    // ============================================================
+    // LOCATIONS / VENUES COLLECTION
+    // ============================================================
+    match /locations/{locationId} {
+      // Anyone (including anonymous) can read locations
+      allow read: if true;
+
+      // Only admins can create or fully replace venue documents
+      allow create, delete: if isAdmin();
+
+      // Admins can update anything; authenticated users can only update
+      // the crowd-related fields (for live crowd updates after reporting)
+      allow update: if isAdmin()
+                    || (isAuthenticated()
+                        && request.resource.data.diff(resource.data).affectedKeys()
+                             .hasOnly(['currentCrowdLevel', 'predictedCrowd', 'predictedCrowdLevel',
+                                       'estimatedWaitTime', 'waitingTime', 'confidence', 'updatedAt']));
+    }
+
+    // ============================================================
+    // CROWD REPORTS COLLECTION
+    // ============================================================
+    match /crowdReports/{reportId} {
+      // Anyone can read approved reports
+      allow read: if resource.data.approved == true || isAdmin();
+
+      // Authenticated users can create their own reports with valid data
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid
+                    && isValidCrowdLevel(request.resource.data.crowdLevel)
+                    && isValidWaitTime(request.resource.data.waitingTime)
+                    && request.resource.data.locationId is string
+                    && request.resource.data.locationId.size() > 0;
+
+      // Admin can update (approve/reject) or delete
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ============================================================
+    // FAVORITES COLLECTION (per-user document)
+    // ============================================================
+    match /favorites/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // ============================================================
+    // NOTIFICATIONS COLLECTION (per-user subcollection)
+    // ============================================================
+    match /notifications/{userId} {
+      allow read: if isOwner(userId);
+
+      // Users can mark notifications as read
+      allow update: if isOwner(userId)
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt']);
+
+      // Only admin or Cloud Functions can create notifications
+      allow create, delete: if isAdmin();
+
+      match /items/{itemId} {
+        allow read: if isOwner(userId);
+        allow update: if isOwner(userId)
+                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt']);
+        allow create, delete: if isAdmin();
+      }
+    }
+
+    // ============================================================
+    // ANALYTICS COLLECTION (system generated, read-only)
+    // ============================================================
+    match /analytics/{locationId} {
+      allow read: if true;
+      allow write: if isAdmin(); // Cloud Functions or admin
+    }
+
+    // ============================================================
+    // ADMIN SETTINGS
+    // ============================================================
+    match /admin/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+  }
+}
