@@ -4,13 +4,12 @@
 // ============================================================
 
 const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyDemoKeyForCrowdPulseWebPlatform2026",
-  authDomain:        "crowdpulse-ai.firebaseapp.com",
-  projectId:         "crowdpulse-ai",
-  storageBucket:     "crowdpulse-ai.appspot.com",
-  messagingSenderId: "987654321012",
-  appId:             "1:987654321012:web:a1b2c3d4e5f67890",
-  measurementId:     "G-XXXXXXXXXX"
+  apiKey:            "AIzaSyATu1jNLxN2puHFqYD_LVvLAb3jQupItCs",
+  authDomain:        "crowdplus-68aef.firebaseapp.com",
+  projectId:         "crowdplus-68aef",
+  storageBucket:     "crowdplus-68aef.firebasestorage.app",
+  messagingSenderId: "60717631770",
+  appId:             "1:60717631770:web:a8027ec8390f9d78d8c4a3"
 };
 
 const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY_HERE";
