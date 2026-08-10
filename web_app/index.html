@@ -45,7 +45,6 @@
       <a href="#search"    class="nav-link"         id="nav-search"    onclick="navigateTo('search',null,event)"><span class="nav-link-icon">🔍</span>Search</a>
       <a href="#favorites" class="nav-link"         id="nav-favorites" onclick="navigateTo('favorites',null,event)"><span class="nav-link-icon">❤️</span>Favorites</a>
       <a href="#report"    class="nav-link"         id="nav-report"    onclick="navigateTo('report',null,event)"><span class="nav-link-icon">📢</span>Report</a>
-      <a href="#auth"      class="nav-link"         id="nav-auth"      onclick="showMobileScreen('auth-signin')"><span class="nav-link-icon">🔐</span>Login / Sign Up</a>
       <a href="#location"  class="nav-link"         id="nav-location"  onclick="showMobileScreen('location-enable')"><span class="nav-link-icon">📍</span>Location</a>
       <a href="#admin"     class="nav-link"         id="nav-admin"     onclick="navigateTo('admin',null,event)" style="color:var(--color-purple-400)"><span class="nav-link-icon">🛡️</span>Admin</a>
     </nav>
@@ -67,7 +66,6 @@
     <a href="#search"    class="nav-link" onclick="navigateTo('search',null,event);closeMobileMenu()">🔍 Search Venues</a>
     <a href="#favorites" class="nav-link" onclick="navigateTo('favorites',null,event);closeMobileMenu()">❤️ Favorites</a>
     <a href="#report"    class="nav-link" onclick="navigateTo('report',null,event);closeMobileMenu()">📢 Report Crowd</a>
-    <a href="#auth"      class="nav-link" onclick="showMobileScreen('auth-signin');closeMobileMenu()">🔐 Login &amp; Sign Up</a>
     <a href="#location"  class="nav-link" onclick="showMobileScreen('location-enable');closeMobileMenu()">📍 Enable Location</a>
     <a href="#profile"   class="nav-link" onclick="navigateTo('profile',null,event);closeMobileMenu()">👤 My Profile</a>
     <a href="#admin"     class="nav-link" onclick="navigateTo('admin',null,event);closeMobileMenu()" style="color:var(--color-purple-400)">🛡️ Admin Panel</a>
@@ -78,30 +76,29 @@
 </header>
 
 <!-- ============================================================
-     18 MOBILE APP SCREENS SELECTOR BAR
+     17 MOBILE APP SCREENS SELECTOR BAR
      ============================================================ -->
 <div class="screen-selector-bar">
-  <div class="screen-selector-title">📱 18 Mobile App Screens:</div>
+  <div class="screen-selector-title">📱 17 Mobile App Screens:</div>
   <div class="screen-selector-pills">
     <button class="screen-pill active" id="pill-onboarding-1" onclick="showMobileScreen('onboarding-1')">1. Onboarding 1</button>
     <button class="screen-pill" id="pill-onboarding-2" onclick="showMobileScreen('onboarding-2')">2. Onboarding 2</button>
     <button class="screen-pill" id="pill-onboarding-3" onclick="showMobileScreen('onboarding-3')">3. Onboarding 3</button>
     <button class="screen-pill" id="pill-onboarding-4" onclick="showMobileScreen('onboarding-4')">4. Onboarding 4</button>
-    <button class="screen-pill" id="pill-auth-signin" onclick="showMobileScreen('auth-signin')">5. Login & Sign Up</button>
-    <button class="screen-pill" id="pill-location-enable" onclick="showMobileScreen('location-enable')">6. Enable Location</button>
-    <button class="screen-pill" id="pill-location-nearme" onclick="showMobileScreen('location-nearme')">7. Near Me Places</button>
-    <button class="screen-pill" id="pill-queueless-home" onclick="showMobileScreen('queueless-home')">8. Home & Map</button>
-    <button class="screen-pill" id="pill-queueless-search" onclick="showMobileScreen('queueless-search')">9. Search Places</button>
-    <button class="screen-pill" id="pill-venue-detail" onclick="showMobileScreen('venue-detail')">10. Central Mall</button>
-    <button class="screen-pill" id="pill-analytics-screen" onclick="showMobileScreen('analytics-screen')">11. Mall Analytics</button>
-    <button class="screen-pill" id="pill-besttime-screen" onclick="showMobileScreen('besttime-screen')">12. Mall Best Time</button>
-    <button class="screen-pill" id="pill-airport-detail" onclick="showMobileScreen('airport-detail')">13. Airport Detail</button>
-    <button class="screen-pill" id="pill-airport-analytics" onclick="showMobileScreen('airport-analytics')">14. Airport Analytics</button>
-    <button class="screen-pill" id="pill-airport-besttime" onclick="showMobileScreen('airport-besttime')">15. Airport Best Time</button>
-    <button class="screen-pill" id="pill-railway-detail" onclick="showMobileScreen('railway-detail')">16. Railway Detail</button>
-    <button class="screen-pill" id="pill-railway-analytics" onclick="showMobileScreen('railway-analytics')">17. Railway Analytics</button>
-    <button class="screen-pill" id="pill-railway-besttime" onclick="showMobileScreen('railway-besttime')">18. Railway Best Time</button>
-    <button class="screen-pill gallery-pill" id="pill-all-screens-grid" onclick="showMobileScreen('all-screens-grid')">🖼️ View All 18 Grid</button>
+    <button class="screen-pill" id="pill-location-enable" onclick="showMobileScreen('location-enable')">5. Enable Location</button>
+    <button class="screen-pill" id="pill-location-nearme" onclick="showMobileScreen('location-nearme')">6. Near Me Places</button>
+    <button class="screen-pill" id="pill-queueless-home" onclick="showMobileScreen('queueless-home')">7. Home & Map</button>
+    <button class="screen-pill" id="pill-queueless-search" onclick="showMobileScreen('queueless-search')">8. Search Places</button>
+    <button class="screen-pill" id="pill-venue-detail" onclick="showMobileScreen('venue-detail')">9. Central Mall</button>
+    <button class="screen-pill" id="pill-analytics-screen" onclick="showMobileScreen('analytics-screen')">10. Mall Analytics</button>
+    <button class="screen-pill" id="pill-besttime-screen" onclick="showMobileScreen('besttime-screen')">11. Mall Best Time</button>
+    <button class="screen-pill" id="pill-airport-detail" onclick="showMobileScreen('airport-detail')">12. Airport Detail</button>
+    <button class="screen-pill" id="pill-airport-analytics" onclick="showMobileScreen('airport-analytics')">13. Airport Analytics</button>
+    <button class="screen-pill" id="pill-airport-besttime" onclick="showMobileScreen('airport-besttime')">14. Airport Best Time</button>
+    <button class="screen-pill" id="pill-railway-detail" onclick="showMobileScreen('railway-detail')">15. Railway Detail</button>
+    <button class="screen-pill" id="pill-railway-analytics" onclick="showMobileScreen('railway-analytics')">16. Railway Analytics</button>
+    <button class="screen-pill" id="pill-railway-besttime" onclick="showMobileScreen('railway-besttime')">17. Railway Best Time</button>
+    <button class="screen-pill gallery-pill" id="pill-all-screens-grid" onclick="showMobileScreen('all-screens-grid')">🖼️ View All 17 Grid</button>
   </div>
 </div>
 
