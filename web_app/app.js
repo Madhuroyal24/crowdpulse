@@ -2912,6 +2912,109 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+/** 10 Mobile Screens Navigation Handler */
+function showMobileScreen(screenId) {
+  // Hide all sections
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  // Activate targeted screen
+  const targetPage = document.getElementById('page-' + screenId);
+  if (targetPage) {
+    targetPage.classList.add('active');
+  }
+
+  // Update pills active state
+  document.querySelectorAll('.screen-pill').forEach(pill => {
+    pill.classList.remove('active');
+  });
+  const activePill = document.getElementById('pill-' + screenId);
+  if (activePill) {
+    activePill.classList.add('active');
+  }
+
+  // Scroll to top
+  const appEl = document.getElementById('app');
+  if (appEl) appEl.scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Init analytics charts if landing on screen 9
+  if (screenId === 'analytics-screen') {
+    initMobileAnalyticsCharts();
+  }
+}
+
+let mobileTodayChartInstance = null;
+let mobileWeeklyChartInstance = null;
+
+function initMobileAnalyticsCharts() {
+  if (typeof Chart === 'undefined') return;
+
+  const todayCtx = document.getElementById('mobileTodayChart');
+  if (todayCtx) {
+    if (mobileTodayChartInstance) mobileTodayChartInstance.destroy();
+    mobileTodayChartInstance = new Chart(todayCtx, {
+      type: 'line',
+      data: {
+        labels: ['6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'],
+        datasets: [
+          {
+            label: 'Actual',
+            data: [20, 45, 80, 65, 85, 40],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.15)',
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Predicted',
+            data: [15, 50, 75, 70, 90, 45],
+            borderColor: '#a855f7',
+            borderDash: [5, 5],
+            tension: 0.4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  const weeklyCtx = document.getElementById('mobileWeeklyChart');
+  if (weeklyCtx) {
+    if (mobileWeeklyChartInstance) mobileWeeklyChartInstance.destroy();
+    mobileWeeklyChartInstance = new Chart(weeklyCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          data: [55, 40, 60, 68, 92, 88, 75],
+          backgroundColor: '#8b5cf6',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+          y: { display: false }
+        }
+      }
+    });
+  }
+}
+
+
 
 
 
