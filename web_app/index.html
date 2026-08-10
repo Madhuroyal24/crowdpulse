@@ -74,22 +74,30 @@
 </header>
 
 <!-- ============================================================
-     10 MOBILE APP SCREENS SELECTOR BAR
+     18 MOBILE APP SCREENS SELECTOR BAR
      ============================================================ -->
 <div class="screen-selector-bar">
-  <div class="screen-selector-title">📱 10 Mobile App Screens:</div>
+  <div class="screen-selector-title">📱 18 Mobile App Screens:</div>
   <div class="screen-selector-pills">
     <button class="screen-pill active" id="pill-onboarding-1" onclick="showMobileScreen('onboarding-1')">1. Onboarding 1</button>
     <button class="screen-pill" id="pill-onboarding-2" onclick="showMobileScreen('onboarding-2')">2. Onboarding 2</button>
     <button class="screen-pill" id="pill-onboarding-3" onclick="showMobileScreen('onboarding-3')">3. Onboarding 3</button>
     <button class="screen-pill" id="pill-onboarding-4" onclick="showMobileScreen('onboarding-4')">4. Onboarding 4</button>
-    <button class="screen-pill" id="pill-auth-signin" onclick="showMobileScreen('auth-signin')">5. Sign In</button>
-    <button class="screen-pill" id="pill-queueless-home" onclick="showMobileScreen('queueless-home')">6. Home & Map</button>
-    <button class="screen-pill" id="pill-queueless-search" onclick="showMobileScreen('queueless-search')">7. Search Places</button>
-    <button class="screen-pill" id="pill-venue-detail" onclick="showMobileScreen('venue-detail')">8. Place Detail</button>
-    <button class="screen-pill" id="pill-analytics-screen" onclick="showMobileScreen('analytics-screen')">9. Crowd Analytics</button>
-    <button class="screen-pill" id="pill-besttime-screen" onclick="showMobileScreen('besttime-screen')">10. Best Time</button>
-    <button class="screen-pill gallery-pill" id="pill-all-screens-grid" onclick="showMobileScreen('all-screens-grid')">🖼️ View All 10 Grid</button>
+    <button class="screen-pill" id="pill-auth-signin" onclick="showMobileScreen('auth-signin')">5. Login & Sign Up</button>
+    <button class="screen-pill" id="pill-location-enable" onclick="showMobileScreen('location-enable')">6. Enable Location</button>
+    <button class="screen-pill" id="pill-location-nearme" onclick="showMobileScreen('location-nearme')">7. Near Me Places</button>
+    <button class="screen-pill" id="pill-queueless-home" onclick="showMobileScreen('queueless-home')">8. Home & Map</button>
+    <button class="screen-pill" id="pill-queueless-search" onclick="showMobileScreen('queueless-search')">9. Search Places</button>
+    <button class="screen-pill" id="pill-venue-detail" onclick="showMobileScreen('venue-detail')">10. Central Mall</button>
+    <button class="screen-pill" id="pill-analytics-screen" onclick="showMobileScreen('analytics-screen')">11. Mall Analytics</button>
+    <button class="screen-pill" id="pill-besttime-screen" onclick="showMobileScreen('besttime-screen')">12. Mall Best Time</button>
+    <button class="screen-pill" id="pill-airport-detail" onclick="showMobileScreen('airport-detail')">13. Airport Detail</button>
+    <button class="screen-pill" id="pill-airport-analytics" onclick="showMobileScreen('airport-analytics')">14. Airport Analytics</button>
+    <button class="screen-pill" id="pill-airport-besttime" onclick="showMobileScreen('airport-besttime')">15. Airport Best Time</button>
+    <button class="screen-pill" id="pill-railway-detail" onclick="showMobileScreen('railway-detail')">16. Railway Detail</button>
+    <button class="screen-pill" id="pill-railway-analytics" onclick="showMobileScreen('railway-analytics')">17. Railway Analytics</button>
+    <button class="screen-pill" id="pill-railway-besttime" onclick="showMobileScreen('railway-besttime')">18. Railway Best Time</button>
+    <button class="screen-pill gallery-pill" id="pill-all-screens-grid" onclick="showMobileScreen('all-screens-grid')">🖼️ View All 18 Grid</button>
   </div>
 </div>
 
@@ -161,26 +169,164 @@
 </section>
 
 <!-- ============================================================
-     SCREEN 5: AUTH SIGN IN
+     SCREEN 5: AUTH LOGIN & SIGN UP
      ============================================================ -->
-<section id="page-auth-signin" class="page mobile-screen-page" aria-label="Sign In">
+<section id="page-auth-signin" class="page mobile-screen-page" aria-label="Auth Login and Sign Up">
   <div class="onboarding-card grad-5">
-    <h2 class="auth-heading">Welcome Back</h2>
-    <p class="auth-sub">Sign in to continue</p>
-    
-    <div class="auth-form-box">
-      <label class="auth-label">Email</label>
-      <input type="email" class="auth-input" placeholder="Enter your email">
-      
+    <div class="auth-tabs-row">
+      <button class="auth-tab active" id="tab-signin-btn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tab-signup-btn" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- SIGN IN FORM -->
+    <div class="auth-form-box" id="auth-signin-box">
+      <h2 class="auth-heading">Welcome Back</h2>
+      <p class="auth-sub">Sign in to manage your crowd alerts & favorite places</p>
+
+      <label class="auth-label">Email Address</label>
+      <input type="email" id="loginEmailInput" class="auth-input" placeholder="name@example.com">
+
       <label class="auth-label" style="margin-top:14px">Password</label>
-      <input type="password" class="auth-input" placeholder="Enter your password">
-      <div style="text-align:right; margin-top:6px;"><a href="#" class="auth-forgot">Forgot Password?</a></div>
-      
-      <button class="btn-auth-submit" onclick="showMobileScreen('queueless-home')">Sign In</button>
+      <input type="password" id="loginPasswordInput" class="auth-input" placeholder="••••••••">
+      <div style="text-align:right; margin-top:6px;"><a href="#" class="auth-forgot" onclick="alert('Password reset link sent to your email!')">Forgot Password?</a></div>
+
+      <button class="btn-auth-submit" onclick="handleMobileLogin()">Sign In</button>
       <div class="auth-divider"><span>OR</span></div>
-      <button class="btn-google-auth" onclick="showMobileScreen('queueless-home')">🌐 Sign in with Google</button>
-      
-      <div class="auth-footer-text">Don't have an account? <a href="#" onclick="showMobileScreen('queueless-home')">Sign Up</a></div>
+      <button class="btn-google-auth" onclick="handleGoogleSignIn()">🌐 Sign in with Google</button>
+      <button class="btn-demo-auth" onclick="handleDemoQuickLogin()">⚡ Quick Demo Guest Sign-In</button>
+
+      <div class="auth-footer-text">Don't have an account? <a href="#" onclick="switchAuthTab('signup')">Create Account</a></div>
+    </div>
+
+    <!-- SIGN UP FORM -->
+    <div class="auth-form-box" id="auth-signup-box" style="display:none;">
+      <h2 class="auth-heading">Create Account</h2>
+      <p class="auth-sub">Join CrowdPulse to get live AI predictions & alerts</p>
+
+      <label class="auth-label">Full Name</label>
+      <input type="text" id="signupNameInput" class="auth-input" placeholder="John Doe">
+
+      <label class="auth-label" style="margin-top:12px">Email Address</label>
+      <input type="email" id="signupEmailInput" class="auth-input" placeholder="name@example.com">
+
+      <label class="auth-label" style="margin-top:12px">Password</label>
+      <input type="password" id="signupPasswordInput" class="auth-input" placeholder="Create strong password">
+
+      <label class="auth-label" style="margin-top:12px">Confirm Password</label>
+      <input type="password" id="signupConfirmPasswordInput" class="auth-input" placeholder="Repeat password">
+
+      <button class="btn-auth-submit" style="margin-top:18px;" onclick="handleMobileSignUp()">Create Account</button>
+      <div class="auth-divider"><span>OR</span></div>
+      <button class="btn-google-auth" onclick="handleGoogleSignIn()">🌐 Sign up with Google</button>
+
+      <div class="auth-footer-text">Already have an account? <a href="#" onclick="switchAuthTab('signin')">Sign In</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 6: ENABLE LOCATION PERMISSION
+     ============================================================ -->
+<section id="page-location-enable" class="page mobile-screen-page" aria-label="Enable Location">
+  <div class="onboarding-card grad-location">
+    <div class="location-pulse-ring">
+      <div class="location-pin-ic">📍⚡</div>
+    </div>
+    
+    <h2 class="onboarding-title">Enable Your<br>Location</h2>
+    <p class="onboarding-sub">CrowdPulse uses your location to calculate real-time queue times, nearest venues, and live crowd distances.</p>
+    
+    <div class="gps-status-card">
+      <div class="gps-status-dot" id="gpsStatusDot"></div>
+      <div id="gpsStatusText">GPS Location: Not Detected Yet</div>
+    </div>
+
+    <button class="btn-onboarding" id="enableLocationBtn" onclick="requestGPSPermission()">🎯 Allow Location Access</button>
+    
+    <div class="manual-location-box">
+      <div class="manual-lbl">Or search city / area manually:</div>
+      <div class="manual-input-wrap">
+        <input type="text" id="manualCityInput" placeholder="Enter city name (e.g. Bangalore)...">
+        <button onclick="setManualLocation()">Set</button>
+      </div>
+    </div>
+
+    <button class="btn-skip" onclick="showMobileScreen('location-nearme')">Skip for Now</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 7: NEAR ME LOCATION VENUES
+     ============================================================ -->
+<section id="page-location-nearme" class="page mobile-screen-page" aria-label="Near Me Location Venues">
+  <div class="location-top-bar">
+    <button class="back-btn" onclick="showMobileScreen('location-enable')">←</button>
+    <div>
+      <h2 class="location-bar-title">📍 Venues Near You</h2>
+      <div class="location-bar-sub" id="currentLocationLabel">Detecting GPS position...</div>
+    </div>
+  </div>
+
+  <div class="radar-preview-banner">
+    <div class="radar-circle-bg"></div>
+    <div class="radar-pin p1" onclick="showMobileScreen('venue-detail')">🏬 0.5 km</div>
+    <div class="radar-pin p2" onclick="showMobileScreen('venue-detail')">🛕 1.2 km</div>
+    <div class="radar-pin p3" onclick="showMobileScreen('venue-detail')">🏦 0.3 km</div>
+    <div class="radar-center-dot">📍 You Are Here</div>
+  </div>
+
+  <div class="radius-filter-pills">
+    <button class="radius-pill active" onclick="filterNearMeRadius(1)">Within 1 km</button>
+    <button class="radius-pill" onclick="filterNearMeRadius(5)">Within 5 km</button>
+    <button class="radius-pill" onclick="filterNearMeRadius(10)">Within 10 km</button>
+    <button class="radius-pill" onclick="filterNearMeRadius(999)">All Places</button>
+  </div>
+
+  <div class="search-section-title">Nearby Venues Sorted by Distance</div>
+  <div class="places-vertical-list" id="nearMePlacesList">
+    <div class="place-row-card" onclick="showMobileScreen('venue-detail')">
+      <div class="place-icon-circle blue">🏦</div>
+      <div class="place-info">
+        <div class="place-name">Central Bank</div>
+        <div class="place-sub">📍 0.3 km away • 5 min wait</div>
+      </div>
+      <div class="badge badge-low">Low Crowd</div>
+    </div>
+
+    <div class="place-row-card" onclick="showMobileScreen('venue-detail')">
+      <div class="place-icon-circle blue">🏬</div>
+      <div class="place-info">
+        <div class="place-name">Central Mall</div>
+        <div class="place-sub">📍 0.5 km away • 35 min wait</div>
+      </div>
+      <div class="badge badge-high">High Crowd</div>
+    </div>
+
+    <div class="place-row-card" onclick="showMobileScreen('venue-detail')">
+      <div class="place-icon-circle blue">🚆</div>
+      <div class="place-info">
+        <div class="place-name">Metro Station</div>
+        <div class="place-sub">📍 0.6 km away • 25 min wait</div>
+      </div>
+      <div class="badge badge-high">High Crowd</div>
+    </div>
+
+    <div class="place-row-card" onclick="showMobileScreen('venue-detail')">
+      <div class="place-icon-circle blue">🛕</div>
+      <div class="place-info">
+        <div class="place-name">City Temple</div>
+        <div class="place-sub">📍 1.2 km away • 12 min wait</div>
+      </div>
+      <div class="badge badge-medium">Medium Crowd</div>
+    </div>
+
+    <div class="place-row-card" onclick="showMobileScreen('venue-detail')">
+      <div class="place-icon-circle blue">🏥</div>
+      <div class="place-info">
+        <div class="place-name">City Hospital</div>
+        <div class="place-sub">📍 1.5 km away • 28 min wait</div>
+      </div>
+      <div class="badge badge-high">High Crowd</div>
     </div>
   </div>
 </section>
@@ -532,11 +678,331 @@
 </section>
 
 <!-- ============================================================
-     GALLERY: VIEW ALL 10 SCREENS GRID
+     SCREEN 11: INTERNATIONAL AIRPORT DETAIL
      ============================================================ -->
-<section id="page-all-screens-grid" class="page mobile-screen-page" aria-label="All 10 Screens Grid">
+<section id="page-airport-detail" class="page mobile-screen-page" aria-label="Airport Detail">
+  <div class="venue-hero-banner" style="background: linear-gradient(135deg, #4f46e5, #9333ea);">
+    <button class="back-btn-overlay" onclick="showMobileScreen('queueless-home')">←</button>
+    <h2 class="venue-hero-title">International Airport</h2>
+    <div class="venue-hero-sub">Airport</div>
+  </div>
+  
+  <div class="venue-detail-content">
+    <div class="status-card-box">
+      <div class="status-card-header">
+        <div>
+          <div class="status-label">Current Crowd Status</div>
+          <div class="updated-time">Updated 2 minutes ago</div>
+        </div>
+        <div class="badge badge-high-pill">High Crowd</div>
+      </div>
+      
+      <div class="progress-section">
+        <div class="progress-meta"><span>Crowd Level</span><strong>92%</strong></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:92%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div></div>
+      </div>
+      
+      <div class="pills-grid">
+        <div class="pill-box" onclick="showMobileScreen('airport-besttime')">
+          <div class="pill-ic">🕒</div>
+          <div><div class="pill-lbl">Best Time</div><div class="pill-val">10:00 AM – 2:00 PM</div></div>
+        </div>
+        <div class="pill-box">
+          <div class="pill-ic">📍</div>
+          <div><div class="pill-lbl">Distance</div><div class="pill-val">12 km</div></div>
+        </div>
+      </div>
+      
+      <div class="action-tab-buttons">
+        <button class="tab-btn-purple" onclick="showMobileScreen('airport-analytics')">📊 Analytics</button>
+        <button class="tab-btn-green" onclick="showMobileScreen('airport-besttime')">🕒 Best Time</button>
+      </div>
+    </div>
+    
+    <div class="info-card-box">
+      <div class="info-item">📍 <strong>Address:</strong> Airport Road</div>
+      <div class="info-item">🕒 <strong>Hours:</strong> Open 24 hours</div>
+      <div class="info-item">⭐ <strong>Rating:</strong> 4.1 (2041 reviews)</div>
+    </div>
+    
+    <div class="reviews-card-box">
+      <div class="reviews-header">
+        <div>👤 <strong>User Reviews</strong></div>
+        <div class="rating-badge">4.1 ★</div>
+      </div>
+      <div class="reviews-count">2041 total reviews</div>
+    </div>
+    
+    <div class="venue-bottom-actions">
+      <button class="btn-outline-action">📍 Directions</button>
+      <button class="btn-primary-action" onclick="openModal('addReportModal')">📢 Report Crowd</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 12: INTERNATIONAL AIRPORT ANALYTICS
+     ============================================================ -->
+<section id="page-airport-analytics" class="page mobile-screen-page" aria-label="Airport Analytics">
+  <div class="analytics-top-header">
+    <button class="back-btn" onclick="showMobileScreen('airport-detail')">←</button>
+    <div>
+      <h2 class="analytics-title">Crowd Analytics</h2>
+      <div class="analytics-sub">International Airport predictions</div>
+    </div>
+  </div>
+  
+  <div class="analytics-metrics-row">
+    <div class="metric-card">
+      <div class="metric-lbl">Current</div>
+      <div class="metric-val">92%</div>
+      <div class="metric-change red">↗ +15%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-lbl">Avg Today</div>
+      <div class="metric-val">78%</div>
+      <div class="metric-change green">↘ -3%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-lbl">Peak</div>
+      <div class="metric-val">98%</div>
+      <div class="metric-sub">6 PM</div>
+    </div>
+  </div>
+  
+  <div class="chart-card-box">
+    <div class="chart-title">Today's Pattern <span class="chart-legend"><span class="leg-actual">● Actual</span> <span class="leg-pred">● Predicted</span></span></div>
+    <div style="height:140px; position:relative;"><canvas id="airportTodayChart"></canvas></div>
+  </div>
+  
+  <div class="chart-card-box" style="margin-top:14px;">
+    <div class="chart-title">Weekly Trend <span class="chart-sub-txt">Average crowd by day of week</span></div>
+    <div style="height:140px; position:relative;"><canvas id="airportWeeklyChart"></canvas></div>
+  </div>
+  
+  <div class="insight-banner">
+    💡 <strong>Insights:</strong> Weekends and Friday evenings have heavy check-in queues. Mid-day is quietest.
+  </div>
+  
+  <div class="quick-stats-box">
+    <div class="quick-stats-title">Quick Stats</div>
+    <div class="stat-row"><span>Busiest Hour</span><strong>6:00 PM – 8:00 PM</strong></div>
+    <div class="stat-row"><span>Quietest Hour</span><strong>11:00 AM – 1:00 PM</strong></div>
+    <div class="stat-row"><span>Prediction Accuracy</span><strong class="green-txt">94%</strong></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 13: INTERNATIONAL AIRPORT BEST TIME
+     ============================================================ -->
+<section id="page-airport-besttime" class="page mobile-screen-page" aria-label="Airport Best Time">
+  <div class="besttime-green-banner">
+    <div class="besttime-banner-head">
+      <button class="back-btn-white" onclick="showMobileScreen('airport-detail')">←</button>
+      <div>
+        <h2 class="besttime-title">Best Time to Visit</h2>
+        <div class="besttime-sub">International Airport recommendations</div>
+      </div>
+    </div>
+    <div class="besttime-highlight-box">
+      <div class="ht-lbl">⏰ Recommended Time Today</div>
+      <div class="ht-val">10:00 AM – 2:00 PM</div>
+    </div>
+  </div>
+  
+  <div class="slots-container">
+    <div class="slots-heading">Today's Time Slots</div>
+    <div class="time-slot-row"><span>6:00 AM – 8:00 AM</span><span class="slot-badge yellow">65%</span></div>
+    <div class="time-slot-row"><span>8:00 AM – 10:00 AM</span><span class="slot-badge yellow">70%</span></div>
+    <div class="time-slot-row"><span>10:00 AM – 12:00 PM</span><span class="slot-badge green">35%</span></div>
+    <div class="time-slot-row"><span>12:00 PM – 2:00 PM</span><span class="slot-badge green">40%</span></div>
+    <div class="time-slot-row"><span>2:00 PM – 4:00 PM</span><span class="slot-badge red">88%</span></div>
+    <div class="time-slot-row"><span>4:00 PM – 6:00 PM</span><span class="slot-badge red">95%</span></div>
+    <div class="time-slot-row"><span>6:00 PM – 8:00 PM</span><span class="slot-badge red">98%</span></div>
+    <div class="time-slot-row"><span>8:00 PM – 10:00 PM</span><span class="slot-badge yellow">75%</span></div>
+  </div>
+  
+  <div class="weekly-recs-container">
+    <div class="slots-heading">Weekly Recommendations</div>
+    <div class="rec-item">
+      <div class="rec-num">1</div>
+      <div><strong>Tuesday</strong> 11:00 AM – 1:00 PM<div class="rec-sub">Lowest passenger traffic</div></div>
+    </div>
+    <div class="rec-item">
+      <div class="rec-num">2</div>
+      <div><strong>Wednesday</strong> 10:00 AM – 2:00 PM<div class="rec-sub">Fast-track security queues</div></div>
+    </div>
+  </div>
+  
+  <div class="protip-card">
+    ⚡ <strong>Pro Tip:</strong> Arrive 2.5 hours before flight departure during peak evening slots.
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 14: MAIN RAILWAY STATION DETAIL
+     ============================================================ -->
+<section id="page-railway-detail" class="page mobile-screen-page" aria-label="Railway Detail">
+  <div class="venue-hero-banner" style="background: linear-gradient(135deg, #2563eb, #7c3aed);">
+    <button class="back-btn-overlay" onclick="showMobileScreen('queueless-home')">←</button>
+    <h2 class="venue-hero-title">Main Railway Station</h2>
+    <div class="venue-hero-sub">Railway Station</div>
+  </div>
+  
+  <div class="venue-detail-content">
+    <div class="status-card-box">
+      <div class="status-card-header">
+        <div>
+          <div class="status-label">Current Crowd Status</div>
+          <div class="updated-time">Updated 2 minutes ago</div>
+        </div>
+        <div class="badge badge-high-pill">High Crowd</div>
+      </div>
+      
+      <div class="progress-section">
+        <div class="progress-meta"><span>Crowd Level</span><strong>88%</strong></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:88%;"></div></div>
+      </div>
+      
+      <div class="pills-grid">
+        <div class="pill-box" onclick="showMobileScreen('railway-besttime')">
+          <div class="pill-ic">🕒</div>
+          <div><div class="pill-lbl">Best Time</div><div class="pill-val">11:00 AM – 3:00 PM</div></div>
+        </div>
+        <div class="pill-box">
+          <div class="pill-ic">📍</div>
+          <div><div class="pill-lbl">Distance</div><div class="pill-val">2.5 km</div></div>
+        </div>
+      </div>
+      
+      <div class="action-tab-buttons">
+        <button class="tab-btn-purple" onclick="showMobileScreen('railway-analytics')">📊 Analytics</button>
+        <button class="tab-btn-green" onclick="showMobileScreen('railway-besttime')">🕒 Best Time</button>
+      </div>
+    </div>
+    
+    <div class="info-card-box">
+      <div class="info-item">📍 <strong>Address:</strong> Station Road</div>
+      <div class="info-item">🕒 <strong>Hours:</strong> Open 24 hours</div>
+      <div class="info-item">⭐ <strong>Rating:</strong> 3.9 (1875 reviews)</div>
+    </div>
+    
+    <div class="reviews-card-box">
+      <div class="reviews-header">
+        <div>👤 <strong>User Reviews</strong></div>
+        <div class="rating-badge">3.9 ★</div>
+      </div>
+      <div class="reviews-count">1875 total reviews</div>
+    </div>
+    
+    <div class="venue-bottom-actions">
+      <button class="btn-outline-action">📍 Directions</button>
+      <button class="btn-primary-action" onclick="openModal('addReportModal')">📢 Report Crowd</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 15: MAIN RAILWAY STATION ANALYTICS
+     ============================================================ -->
+<section id="page-railway-analytics" class="page mobile-screen-page" aria-label="Railway Analytics">
+  <div class="analytics-top-header">
+    <button class="back-btn" onclick="showMobileScreen('railway-detail')">←</button>
+    <div>
+      <h2 class="analytics-title">Crowd Analytics</h2>
+      <div class="analytics-sub">Main Railway Station predictions</div>
+    </div>
+  </div>
+  
+  <div class="analytics-metrics-row">
+    <div class="metric-card">
+      <div class="metric-lbl">Current</div>
+      <div class="metric-val">88%</div>
+      <div class="metric-change red">↗ +10%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-lbl">Avg Today</div>
+      <div class="metric-val">75%</div>
+      <div class="metric-change green">↘ -4%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-lbl">Peak</div>
+      <div class="metric-val">96%</div>
+      <div class="metric-sub">5 PM</div>
+    </div>
+  </div>
+  
+  <div class="chart-card-box">
+    <div class="chart-title">Today's Pattern <span class="chart-legend"><span class="leg-actual">● Actual</span> <span class="leg-pred">● Predicted</span></span></div>
+    <div style="height:140px; position:relative;"><canvas id="railwayTodayChart"></canvas></div>
+  </div>
+  
+  <div class="chart-card-box" style="margin-top:14px;">
+    <div class="chart-title">Weekly Trend <span class="chart-sub-txt">Average crowd by day of week</span></div>
+    <div style="height:140px; position:relative;"><canvas id="railwayWeeklyChart"></canvas></div>
+  </div>
+  
+  <div class="insight-banner">
+    💡 <strong>Insights:</strong> Ticket counter queues peak during morning 7-9 AM and evening 5-8 PM.
+  </div>
+  
+  <div class="quick-stats-box">
+    <div class="quick-stats-title">Quick Stats</div>
+    <div class="stat-row"><span>Busiest Hour</span><strong>5:00 PM – 7:00 PM</strong></div>
+    <div class="stat-row"><span>Quietest Hour</span><strong>1:00 PM – 3:00 PM</strong></div>
+    <div class="stat-row"><span>Prediction Accuracy</span><strong class="green-txt">94%</strong></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 16: MAIN RAILWAY STATION BEST TIME
+     ============================================================ -->
+<section id="page-railway-besttime" class="page mobile-screen-page" aria-label="Railway Best Time">
+  <div class="besttime-green-banner">
+    <div class="besttime-banner-head">
+      <button class="back-btn-white" onclick="showMobileScreen('railway-detail')">←</button>
+      <div>
+        <h2 class="besttime-title">Best Time to Visit</h2>
+        <div class="besttime-sub">Main Railway Station recommendations</div>
+      </div>
+    </div>
+    <div class="besttime-highlight-box">
+      <div class="ht-lbl">⏰ Recommended Time Today</div>
+      <div class="ht-val">11:00 AM – 3:00 PM</div>
+    </div>
+  </div>
+  
+  <div class="slots-container">
+    <div class="slots-heading">Today's Time Slots</div>
+    <div class="time-slot-row"><span>6:00 AM – 8:00 AM</span><span class="slot-badge red">85%</span></div>
+    <div class="time-slot-row"><span>8:00 AM – 10:00 AM</span><span class="slot-badge red">90%</span></div>
+    <div class="time-slot-row"><span>10:00 AM – 12:00 PM</span><span class="slot-badge green">40%</span></div>
+    <div class="time-slot-row"><span>12:00 PM – 2:00 PM</span><span class="slot-badge green">35%</span></div>
+    <div class="time-slot-row"><span>2:00 PM – 4:00 PM</span><span class="slot-badge green">45%</span></div>
+    <div class="time-slot-row"><span>4:00 PM – 6:00 PM</span><span class="slot-badge red">92%</span></div>
+    <div class="time-slot-row"><span>6:00 PM – 8:00 PM</span><span class="slot-badge red">96%</span></div>
+    <div class="time-slot-row"><span>8:00 PM – 10:00 PM</span><span class="slot-badge yellow">65%</span></div>
+  </div>
+  
+  <div class="weekly-recs-container">
+    <div class="slots-heading">Weekly Recommendations</div>
+    <div class="rec-item">
+      <div class="rec-num">1</div>
+      <div><strong>Thursday</strong> 1:00 PM – 3:00 PM<div class="rec-sub">Lowest platform crowd</div></div>
+    </div>
+  </div>
+  
+  <div class="protip-card">
+    ⚡ <strong>Pro Tip:</strong> Use UTS mobile ticketing to skip offline ticket booking lines.
+  </div>
+</section>
+
+<!-- ============================================================
+     GALLERY: VIEW ALL 16 SCREENS GRID
+     ============================================================ -->
+<section id="page-all-screens-grid" class="page mobile-screen-page" aria-label="All 16 Screens Grid">
   <div class="gallery-header">
-    <h2>🖼️ All 10 App Screens Overview</h2>
+    <h2>🖼️ All 16 App Screens Overview</h2>
     <p>Click any screen preview to launch it in full mobile view!</p>
   </div>
   

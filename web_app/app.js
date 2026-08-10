@@ -3014,6 +3014,169 @@ function initMobileAnalyticsCharts() {
   }
 }
 
+/** Switch between Sign In and Sign Up Tabs */
+function switchAuthTab(tab) {
+  const signinBox = document.getElementById('auth-signin-box');
+  const signupBox = document.getElementById('auth-signup-box');
+  const signinTab = document.getElementById('tab-signin-btn');
+  const signupTab = document.getElementById('tab-signup-btn');
+
+  if (tab === 'signin') {
+    if (signinBox) signinBox.style.display = 'block';
+    if (signupBox) signupBox.style.display = 'none';
+    if (signinTab) signinTab.classList.add('active');
+    if (signupTab) signupTab.classList.remove('active');
+  } else {
+    if (signinBox) signinBox.style.display = 'none';
+    if (signupBox) signupBox.style.display = 'block';
+    if (signinTab) signinTab.classList.remove('active');
+    if (signupTab) signupTab.classList.add('active');
+  }
+}
+
+/** Handle Mobile Sign In */
+async function handleMobileLogin() {
+  const email = document.getElementById('loginEmailInput')?.value.trim();
+  const password = document.getElementById('loginPasswordInput')?.value.trim();
+
+  if (!email || !password) {
+    showToast('error', 'Authentication Error', 'Please fill in both email and password.');
+    return;
+  }
+
+  if (auth) {
+    try {
+      const res = await auth.signInWithEmailAndPassword(email, password);
+      showToast('success', 'Welcome Back! 👋', `Logged in as ${res.user.email}`);
+      showMobileScreen('location-enable');
+    } catch(err) {
+      showToast('error', 'Login Failed', err.message);
+    }
+  } else {
+    showToast('success', 'Logged In (Guest Mode)', `Welcome back, ${email.split('@')[0]}!`);
+    showMobileScreen('location-enable');
+  }
+}
+
+/** Handle Mobile Sign Up */
+async function handleMobileSignUp() {
+  const name = document.getElementById('signupNameInput')?.value.trim();
+  const email = document.getElementById('signupEmailInput')?.value.trim();
+  const password = document.getElementById('signupPasswordInput')?.value.trim();
+  const confirm = document.getElementById('signupConfirmPasswordInput')?.value.trim();
+
+  if (!name || !email || !password) {
+    showToast('error', 'Validation Error', 'Please complete all required sign-up fields.');
+    return;
+  }
+
+  if (password !== confirm) {
+    showToast('error', 'Password Mismatch', 'Password and Confirm Password do not match.');
+    return;
+  }
+
+  if (auth) {
+    try {
+      const res = await auth.createUserWithEmailAndPassword(email, password);
+      await res.user.updateProfile({ displayName: name });
+      if (db) {
+        await db.collection('users').doc(res.user.uid).set({
+          name, email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+      showToast('success', 'Account Created! 🎉', `Welcome to CrowdPulse, ${name}!`);
+      showMobileScreen('location-enable');
+    } catch(err) {
+      showToast('error', 'Sign Up Error', err.message);
+    }
+  } else {
+    showToast('success', 'Account Created! 🎉', `Welcome to CrowdPulse, ${name}!`);
+    showMobileScreen('location-enable');
+  }
+}
+
+/** Demo Quick Sign-In */
+function handleDemoQuickLogin() {
+  showToast('success', 'Quick Guest Login ⚡', 'Logged in as Demo User');
+  showMobileScreen('location-enable');
+}
+
+/** Handle Google Sign-In */
+function handleGoogleSignIn() {
+  if (auth && typeof firebase.auth.GoogleAuthProvider !== 'undefined') {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then((res) => {
+        showToast('success', 'Google Sign-In Successful! 🌐', `Logged in as ${res.user.displayName || res.user.email}`);
+        showMobileScreen('location-enable');
+      })
+      .catch((err) => {
+        showToast('info', 'Google Sign-In', 'Redirecting with guest profile...');
+        showMobileScreen('location-enable');
+      });
+  } else {
+    showToast('success', 'Google Sign-In (Guest)', 'Logged in with Google account');
+    showMobileScreen('location-enable');
+  }
+}
+
+/** Request GPS Permission & Detect Location */
+function requestGPSPermission() {
+  const dot = document.getElementById('gpsStatusDot');
+  const txt = document.getElementById('gpsStatusText');
+  const label = document.getElementById('currentLocationLabel');
+
+  if (txt) txt.textContent = 'Detecting GPS location...';
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude.toFixed(4);
+        const lng = pos.coords.longitude.toFixed(4);
+        if (dot) dot.classList.add('active');
+        if (txt) txt.textContent = `GPS Active: ${lat}° N, ${lng}° E`;
+        if (label) label.textContent = `📍 GPS Active (${lat}, ${lng})`;
+
+        showToast('success', 'Location Access Granted 🎯', `Position: ${lat}, ${lng}`);
+        setTimeout(() => showMobileScreen('location-nearme'), 1200);
+      },
+      (err) => {
+        if (txt) txt.textContent = 'GPS Permission Denied. Using Default Location.';
+        if (label) label.textContent = '📍 Central Circle (Default)';
+        showToast('warning', 'Location Permission', 'Using default city location.');
+        setTimeout(() => showMobileScreen('location-nearme'), 1200);
+      }
+    );
+  } else {
+    if (txt) txt.textContent = 'Geolocation not supported by browser.';
+    showMobileScreen('location-nearme');
+  }
+}
+
+/** Manual City Location Setter */
+function setManualLocation() {
+  const city = document.getElementById('manualCityInput')?.value.trim();
+  if (!city) {
+    showToast('warning', 'Input Missing', 'Please enter a city or area name.');
+    return;
+  }
+
+  const label = document.getElementById('currentLocationLabel');
+  if (label) label.textContent = `📍 Location: ${city}`;
+
+  showToast('success', 'Location Updated! 📍', `Current location set to ${city}`);
+  showMobileScreen('location-nearme');
+}
+
+/** Radius Filter for Near Me Places */
+function filterNearMeRadius(radiusKm) {
+  document.querySelectorAll('.radius-pill').forEach(pill => pill.classList.remove('active'));
+  event.target.classList.add('active');
+
+  showToast('info', 'Filter Applied 📍', radiusKm === 999 ? 'Showing all nearby places' : `Showing venues within ${radiusKm} km radius`);
+}
+
+
 
 
 

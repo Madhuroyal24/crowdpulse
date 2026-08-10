@@ -4098,13 +4098,232 @@ body.smartphone-mode .device-toggle-btn {
 .mini-screen.grad-analytics { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
 .mini-screen.grad-green { background: linear-gradient(135deg, #059669, #10b981); }
 
-.mini-ic { font-size: 24px; margin-bottom: 8px; }
-.mini-title { font-size: 13px; font-weight: 800; }
-.mini-sub { font-size: 10px; opacity: 0.8; margin-top: 4px; }
-.mini-btn { margin-top: 12px; background: #fff; color: #000; border: none; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
-.mini-badge { margin-top: 8px; background: #ef4444; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
-.mini-map { background: rgba(255,255,255,0.1); padding: 8px; border-radius: 10px; font-size: 11px; margin-bottom: 6px; }
-.mini-search { background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 10px; font-size: 10px; }
+/* ============================================================
+   AUTH TABS & LOCATION SCREENS STYLES
+   ============================================================ */
+.auth-tabs-row {
+  display: flex;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  padding: 4px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.auth-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-tab.active {
+  background: #ffffff;
+  color: #7e22ce;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-demo-auth {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 10px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.grad-location {
+  background: linear-gradient(160deg, #0284c7 0%, #0284c7 35%, #0f172a 100%);
+}
+
+.location-pulse-ring {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  animation: pulse-ring 2s infinite;
+}
+
+.location-pin-ic {
+  font-size: 44px;
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+  70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+}
+
+.gps-status-card {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.gps-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f59e0b;
+}
+
+.gps-status-dot.active {
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+
+.manual-location-box {
+  width: 100%;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.manual-lbl {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 6px;
+}
+
+.manual-input-wrap {
+  display: flex;
+  gap: 8px;
+}
+
+.manual-input-wrap input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.manual-input-wrap button {
+  background: #fff;
+  color: #0284c7;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Near Me Location Bar & Radar Banner */
+.location-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.location-bar-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.location-bar-sub {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.radar-preview-banner {
+  height: 160px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 20px;
+  margin: 0 16px 14px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-circle-bg {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px dashed rgba(56, 189, 248, 0.3);
+  animation: rotate-radar 10s linear infinite;
+}
+
+@keyframes rotate-radar { 100% { transform: rotate(360deg); } }
+
+.radar-center-dot {
+  position: absolute;
+  background: #38bdf8;
+  color: #0f172a;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 0 12px #38bdf8;
+}
+
+.radar-pin {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.radar-pin.p1 { top: 20px; left: 30px; }
+.radar-pin.p2 { top: 30px; right: 40px; }
+.radar-pin.p3 { bottom: 20px; right: 80px; }
+
+.radius-filter-pills {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 14px;
+  overflow-x: auto;
+}
+
+.radius-pill {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.radius-pill.active {
+  background: #0284c7;
+  color: #fff;
+  border-color: transparent;
+}
+
 
 
 
