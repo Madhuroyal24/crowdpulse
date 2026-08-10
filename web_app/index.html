@@ -45,6 +45,8 @@
       <a href="#search"    class="nav-link"         id="nav-search"    onclick="navigateTo('search',null,event)"><span class="nav-link-icon">🔍</span>Search</a>
       <a href="#favorites" class="nav-link"         id="nav-favorites" onclick="navigateTo('favorites',null,event)"><span class="nav-link-icon">❤️</span>Favorites</a>
       <a href="#report"    class="nav-link"         id="nav-report"    onclick="navigateTo('report',null,event)"><span class="nav-link-icon">📢</span>Report</a>
+      <a href="#auth"      class="nav-link"         id="nav-auth"      onclick="showMobileScreen('auth-signin')"><span class="nav-link-icon">🔐</span>Login / Sign Up</a>
+      <a href="#location"  class="nav-link"         id="nav-location"  onclick="showMobileScreen('location-enable')"><span class="nav-link-icon">📍</span>Location</a>
       <a href="#admin"     class="nav-link"         id="nav-admin"     onclick="navigateTo('admin',null,event)" style="color:var(--color-purple-400)"><span class="nav-link-icon">🛡️</span>Admin</a>
     </nav>
 
@@ -65,6 +67,8 @@
     <a href="#search"    class="nav-link" onclick="navigateTo('search',null,event);closeMobileMenu()">🔍 Search Venues</a>
     <a href="#favorites" class="nav-link" onclick="navigateTo('favorites',null,event);closeMobileMenu()">❤️ Favorites</a>
     <a href="#report"    class="nav-link" onclick="navigateTo('report',null,event);closeMobileMenu()">📢 Report Crowd</a>
+    <a href="#auth"      class="nav-link" onclick="showMobileScreen('auth-signin');closeMobileMenu()">🔐 Login &amp; Sign Up</a>
+    <a href="#location"  class="nav-link" onclick="showMobileScreen('location-enable');closeMobileMenu()">📍 Enable Location</a>
     <a href="#profile"   class="nav-link" onclick="navigateTo('profile',null,event);closeMobileMenu()">👤 My Profile</a>
     <a href="#admin"     class="nav-link" onclick="navigateTo('admin',null,event);closeMobileMenu()" style="color:var(--color-purple-400)">🛡️ Admin Panel</a>
     <a class="nav-link" onclick="openModal('dbModal');closeMobileMenu()" style="color:var(--color-blue-400)">🗄️ Connect Database</a>
@@ -109,7 +113,7 @@
 <!-- ============================================================
      SCREEN 1: ONBOARDING 1
      ============================================================ -->
-<section id="page-onboarding-1" class="page mobile-screen-page active" aria-label="Onboarding 1">
+<section id="page-onboarding-1" class="page mobile-screen-page" aria-label="Onboarding 1">
   <div class="onboarding-card grad-1">
     <div class="onboarding-icon-wrap">
       <div class="onboarding-icon">👥 ➔ 👥</div>
