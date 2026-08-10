@@ -2889,6 +2889,30 @@ function resetDatabaseCredentials() {
   }
 }
 
+/** Toggle Smartphone Mobile Device View Mockup */
+function toggleSmartphoneView() {
+  const isSmartphone = document.body.classList.toggle('smartphone-mode');
+  localStorage.setItem('cp_smartphone_view', isSmartphone ? 'true' : 'false');
+  
+  const labelEl = document.querySelector('.device-toggle-label');
+  if (labelEl) {
+    labelEl.textContent = isSmartphone ? 'Desktop View' : 'Mobile View';
+  }
+  
+  showToast('info', isSmartphone ? '📱 Mobile App View Enabled' : '🖥️ Desktop Web View Enabled', 
+    isSmartphone ? 'Viewing web app inside interactive smartphone mockup frame.' : 'Viewing full desktop web application.');
+}
+
+// Restore saved smartphone view preference on load
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('cp_smartphone_view') === 'true') {
+    document.body.classList.add('smartphone-mode');
+    const labelEl = document.querySelector('.device-toggle-label');
+    if (labelEl) labelEl.textContent = 'Desktop View';
+  }
+});
+
+
 
 
 
